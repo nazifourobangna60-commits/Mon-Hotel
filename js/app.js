@@ -12,6 +12,12 @@ const CONFIG = {
     emailjs_service: 'service_k48oidk',
     emailjs_template: 'template_54fooyf',
     emailjs_public_key: '7oOH5j2AgZf8PSO0u',
+    // Firebase placeholders — remplacez par votre configuration Firebase
+    firebase_apiKey: 'YOUR_FIREBASE_API_KEY',
+    firebase_authDomain: 'YOUR_PROJECT.firebaseapp.com',
+    firebase_projectId: 'YOUR_PROJECT_ID',
+    firebase_appId: '1:000:web:xxxx',
+    firebase_measurementId: '',
 };
 
 // ============================================================
@@ -31,6 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
     loadFromStorage();
     initDefaultRooms();
     checkSession();
+    initFirebase();
     renderRooms();
     updateNavbar();
     setDateConstraints();
@@ -132,6 +139,10 @@ function saveToStorage() {
     localStorage.setItem('reservations', JSON.stringify(reservations));
     // Compatibilité ancien code
     localStorage.setItem('rooms', JSON.stringify(rooms));
+    // Si l'admin est connecté et Firebase configuré, pousser les mises à jour
+    if (currentAdmin && window._fb && window._fb.db) {
+        pushRoomsToFirestore();
+    }
 }
 
 // ============================================================
@@ -399,6 +410,9 @@ function handleBooking(e) {
     room.checkOut = checkOut;
 
     saveToStorage();
+
+    // Push reservation to Firestore when available
+    pushReservationToFirestore(reservation).catch?.(() => {});
 
     // Notif admin
     sendAdminNotification({
@@ -871,6 +885,17 @@ function sendAdminNotification(notification) {
     if (notifs.length > 50) notifs.splice(50);
     localStorage.setItem('admin_notifications', JSON.stringify(notifs));
     loadAdminNotifications();
+    // Push to Firestore for centralized notifications (Cloud Functions can watch this)
+    if (window._fb && window._fb.db) {
+        try {
+            window._fb.db.collection('admin_notifications').add({
+                ...notification,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            }).catch(err => console.error('Erreur push admin notification', err));
+        } catch (e) {
+            console.error('Erreur sendAdminNotification firestore', e);
+        }
+    }
 }
 
 function loadAdminNotifications() {
@@ -960,6 +985,102 @@ function initEmailJS() {
     } else if (typeof emailjs !== 'undefined') {
         console.warn('EmailJS trouvé mais la clé publique n’est pas configurée.');
     }
+}
+
+// ============================================================
+// FIREBASE / FIRESTORE (optional)
+// ============================================================
+function initFirebase() {
+    // Check if Firebase SDK is loaded and user provided config
+    if (typeof firebase === 'undefined') {
+        console.info('Firebase non chargé — synchronisation en temps réel désactivée.');
+        return;
+    }
+
+    if (!CONFIG.firebase_apiKey || CONFIG.firebase_apiKey === 'YOUR_FIREBASE_API_KEY') {
+        console.info('Firebase non configuré dans CONFIG. Ajoutez vos clés pour activer la sync.');
+        return;
+    }
+
+    try {
+        const fbConfig = {
+            apiKey: CONFIG.firebase_apiKey,
+            authDomain: CONFIG.firebase_authDomain,
+            projectId: CONFIG.firebase_projectId,
+            appId: CONFIG.firebase_appId,
+            measurementId: CONFIG.firebase_measurementId,
+        };
+
+        if (!firebase.apps.length) {
+            firebase.initializeApp(fbConfig);
+        }
+
+        window._fb = {
+            app: firebase.app(),
+            auth: firebase.auth(),
+            db: firebase.firestore(),
+        };
+
+        subscribeToFirestoreRooms();
+        subscribeToFirestoreReservations();
+        console.log('Firebase initialisé — synchronisation activée');
+    } catch (err) {
+        console.error('Erreur initialisation Firebase', err);
+    }
+}
+
+function pushRoomsToFirestore() {
+    if (!window._fb || !window._fb.db) return;
+    const docRef = window._fb.db.collection('luxe_hotel_meta').doc('rooms');
+    docRef.set({ rooms: rooms, updatedAt: firebase.firestore.FieldValue.serverTimestamp() })
+        .catch(err => console.error('Erreur pushRoomsToFirestore', err));
+}
+
+function pushReservationToFirestore(reservation) {
+    if (!window._fb || !window._fb.db) return;
+    try {
+        return window._fb.db.collection('reservations').doc(reservation.id).set(reservation);
+    } catch (e) {
+        console.error('Erreur pushReservationToFirestore', e);
+    }
+}
+
+function subscribeToFirestoreReservations() {
+    if (!window._fb || !window._fb.db) return;
+    window._fb.db.collection('reservations').onSnapshot(snap => {
+        const docs = [];
+        snap.forEach(d => docs.push(d.data()));
+        if (Array.isArray(docs) && docs.length >= 0) {
+            reservations = docs;
+            saveToStorage();
+            // Update views
+            renderRooms();
+            if (document.getElementById('adminPanel')?.classList.contains('active')) {
+                renderAdminReservations && renderAdminReservations();
+                updateAdminStats && updateAdminStats();
+            }
+            console.log('Reservations synchronisées depuis Firestore');
+        }
+    }, err => console.error('Firestore reservations onSnapshot error', err));
+}
+
+function subscribeToFirestoreRooms() {
+    if (!window._fb || !window._fb.db) return;
+    const docRef = window._fb.db.collection('luxe_hotel_meta').doc('rooms');
+    docRef.onSnapshot(doc => {
+        if (!doc.exists) return;
+        try {
+            const data = doc.data();
+            if (data && Array.isArray(data.rooms)) {
+                rooms = data.rooms;
+                saveToStorage();
+                renderRooms();
+                console.log('Rooms synchronisées depuis Firestore');
+            }
+        } catch (e) {
+            console.error('Erreur lecture rooms Firestore', e);
+        }
+    }, err => console.error('Firestore onSnapshot error', err));
 }
 
 // ============================================================

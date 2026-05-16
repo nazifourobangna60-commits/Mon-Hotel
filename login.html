@@ -668,6 +668,13 @@
 </head>
 <body>
 
+    <!-- Firebase (compat) -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+    <!-- App shared script (contains CONFIG and initFirebase) -->
+    <script src="js/app.js"></script>
+
 <!-- Toast Container -->
 <div class="toast-container" id="toastContainer"></div>
 
@@ -1230,18 +1237,71 @@ function doLogin() {
 
     setLoading(btn, true);
 
-    // Comptes démo
-    const demo = [
-        { email: 'admin@luxehotel.com', password: 'Admin@2026', name: 'Administrateur', role: 'admin' },
-        { email: 'client@luxehotel.com', password: 'Client123', name: 'Client Demo', role: 'client' }
-    ];
+    // If Firebase Auth is available and configured, use it
+    if (typeof firebase !== 'undefined' && window.CONFIG && CONFIG.firebase_apiKey && CONFIG.firebase_apiKey !== 'YOUR_FIREBASE_API_KEY') {
+        firebase.auth().signInWithEmailAndPassword(email, password)
+            .then(cred => {
+                setLoading(btn, false);
+                const u = cred.user;
+                // Load profile from Firestore
+                if (window._fb && window._fb.db) {
+                    window._fb.db.collection('users').doc(u.uid).get().then(doc => {
+                        const profile = doc.exists ? doc.data() : { name: u.displayName || u.email, email: u.email };
+                        const session = {
+                            id: u.uid,
+                            email: profile.email || u.email,
+                            name: profile.name || u.email.split('@')[0],
+                            role: profile.role || 'client',
+                            country: profile.country || '',
+                            phone: profile.phone || '',
+                            sex: profile.sex || '',
+                            profilePhoto: profile.profilePhoto || null
+                        };
+                        localStorage.setItem('lh_session', JSON.stringify(session));
+                        localStorage.setItem('currentUser', JSON.stringify(session));
+                        localStorage.setItem('currentClient', JSON.stringify(session));
+                        if (session.role === 'admin') {
+                            localStorage.setItem('currentAdmin', JSON.stringify(session));
+                            localStorage.removeItem('currentClient');
+                        }
+                        showAlert('loginAlert', 'Connexion réussie ! Redirection en cours...', 'success');
+                        showToast('Bienvenue, ' + session.name + ' !', 'success');
+                        setTimeout(() => { window.location.href = session.role === 'admin' ? 'admin.html' : 'index.html'; }, 900);
+                    }).catch(err => {
+                        console.error('Erreur lecture profil utilisateur', err);
+                        showAlert('loginAlert', 'Erreur lors de la connexion.', 'error');
+                        setLoading(btn, false);
+                    });
+                } else {
+                    const session = { id: u.uid, email: u.email, name: u.displayName || u.email.split('@')[0], role: 'client' };
+                    localStorage.setItem('lh_session', JSON.stringify(session));
+                    localStorage.setItem('currentUser', JSON.stringify(session));
+                    setLoading(btn, false);
+                    showAlert('loginAlert', 'Connexion réussie ! Redirection en cours...', 'success');
+                    setTimeout(() => { window.location.href = 'index.html'; }, 900);
+                }
+            })
+            .catch(err => {
+                console.error('Firebase login error', err);
+                setLoading(btn, false);
+                showAlert('loginAlert', 'E-mail ou mot de passe incorrect.', 'error');
+            });
+        return;
+    }
 
-    const stored = JSON.parse(localStorage.getItem('lh_users') || '[]');
-    const all = [...demo, ...stored];
-    const user = all.find(u => u.email.toLowerCase() === email.toLowerCase() && u.password === password);
-
+    // Fallback local auth (existing behavior)
     setTimeout(() => {
         setLoading(btn, false);
+        // Comptes démo
+        const demo = [
+            { email: 'admin@luxehotel.com', password: 'Admin@2026', name: 'Administrateur', role: 'admin' },
+            { email: 'client@luxehotel.com', password: 'Client123', name: 'Client Demo', role: 'client' }
+        ];
+
+        const stored = JSON.parse(localStorage.getItem('lh_users') || '[]');
+        const all = [...demo, ...stored];
+        const user = all.find(u => u.email.toLowerCase() === email.toLowerCase() && u.password === password);
+
         if (user) {
             if (document.getElementById('rememberMe').checked) {
                 localStorage.setItem('lh_remembered_email', email);
@@ -1331,6 +1391,73 @@ function doRegister() {
 
     setLoading(btn, true);
 
+    // If Firebase Auth is available and configured, create user there
+    if (typeof firebase !== 'undefined' && window.CONFIG && CONFIG.firebase_apiKey && CONFIG.firebase_apiKey !== 'YOUR_FIREBASE_API_KEY') {
+        // Check duplicate via Firebase Auth is implicit — createUser will fail if exists
+        firebase.auth().createUserWithEmailAndPassword(email, password)
+            .then(cred => {
+                const u = cred.user;
+                const profile = {
+                    name: firstName + ' ' + lastName,
+                    firstName, lastName,
+                    email,
+                    country: countryName,
+                    countryCode,
+                    phone: countryCode + phone,
+                    sex: selectedGender,
+                    role: 'client',
+                    profilePhoto: null,
+                    registrationDate: new Date().toISOString()
+                };
+                // Save profile to Firestore
+                if (window._fb && window._fb.db) {
+                    window._fb.db.collection('users').doc(u.uid).set(profile)
+                        .then(() => {
+                            // Add admin notification document for Cloud Function processing
+                            window._fb.db.collection('admin_notifications').add({
+                                title: 'Nouvel utilisateur inscrit',
+                                message: `${profile.name} (${email}) s'est inscrit`,
+                                icon: 'user-check',
+                                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                                type: 'new-user',
+                                email: email
+                            }).catch(err => console.error('Erreur ajout notification admin', err));
+
+                            const session = { id: u.uid, email: email, name: profile.name, role: 'client', country: countryName, phone: profile.phone };
+                            localStorage.setItem('lh_session', JSON.stringify(session));
+                            localStorage.setItem('currentUser', JSON.stringify(session));
+                            localStorage.setItem('currentClient', JSON.stringify(session));
+
+                            setLoading(btn, false);
+                            showAlert('registerAlert', 'Compte créé avec succès ! Redirection...', 'success');
+                            showToast('Bienvenue, ' + firstName + ' !', 'success');
+                            setTimeout(() => { window.location.href = 'index.html'; }, 1200);
+                        })
+                        .catch(err => {
+                            console.error('Erreur sauvegarde profil', err);
+                            setLoading(btn, false);
+                            showAlert('registerAlert', 'Erreur lors de la création du compte.', 'error');
+                        });
+                } else {
+                    // No Firestore — fallback to local session
+                    const session = { id: u.uid, email: email, name: profile.name, role: 'client' };
+                    localStorage.setItem('lh_session', JSON.stringify(session));
+                    localStorage.setItem('currentUser', JSON.stringify(session));
+                    setLoading(btn, false);
+                    showAlert('registerAlert', 'Compte créé (local) ! Redirection...', 'success');
+                    setTimeout(() => { window.location.href = 'index.html'; }, 1200);
+                }
+            })
+            .catch(err => {
+                console.error('Firebase register error', err);
+                setLoading(btn, false);
+                showAlert('registerAlert', err.message || 'Erreur lors de la création du compte.', 'error');
+            });
+
+        return;
+    }
+
+    // Fallback local registration (existing behavior)
     const users = JSON.parse(localStorage.getItem('lh_users') || '[]');
     if (users.find(u => u.email.toLowerCase() === email.toLowerCase())) {
         setLoading(btn, false);
