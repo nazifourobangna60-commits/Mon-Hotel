@@ -1,8 +1,3 @@
-/**
- * LuxeHôtel — Application JavaScript unifiée
- * Corrigée, déboguée et optimisée
- * ============================================================
- */
 
 'use strict';
 
@@ -10,12 +5,13 @@
 // CONFIG
 // ============================================================
 const CONFIG = {
-    ADMIN_EMAIL: 'admin@luxehotel.com',
+    ADMIN_EMAIL: 'ourorara57@gmail.com',
     ADMIN_PASSWORD: 'Admin@2026',
     APP_NAME: 'LuxeHôtel',
     CURRENCY: '€',
     emailjs_service: 'service_k48oidk',
     emailjs_template: 'template_54fooyf',
+    emailjs_public_key: '7oOH5j2AgZf8PSO0u',
 };
 
 // ============================================================
@@ -908,16 +904,61 @@ function toggleNotifications() {
 function handleContact(e) {
     e.preventDefault();
     const form = e.target;
-    const data = new FormData(form);
+    const formData = new FormData(form);
 
-    // Simuler envoi (EmailJS si configuré)
-    showToast('Message envoyé ! Nous vous répondrons rapidement.', 'success');
-    form.reset();
+    const templateParams = {
+        from_name: formData.get('name')?.toString().trim() || 'Client',
+        from_email: formData.get('email')?.toString().trim() || '',
+        subject: formData.get('subject')?.toString().trim() || 'Nouveau message depuis le site',
+        message: formData.get('message')?.toString().trim() || '',
+        admin_email: CONFIG.ADMIN_EMAIL,
+        sent_at: new Date().toLocaleString('fr-FR'),
+    };
+
+    if (typeof emailjs !== 'undefined'
+        && CONFIG.emailjs_service
+        && CONFIG.emailjs_template
+        && CONFIG.emailjs_public_key
+        && CONFIG.emailjs_public_key !== 'YOUR_PUBLIC_KEY') {
+        emailjs.send(CONFIG.emailjs_service, CONFIG.emailjs_template, templateParams)
+            .then(() => {
+                saveContactMessage(templateParams);
+                showToast('Message envoyé ! Nous vous répondrons rapidement.', 'success');
+                form.reset();
+            })
+            .catch(error => {
+                console.error('EmailJS envoi échoué', error);
+                saveContactMessage(templateParams);
+                showToast('Erreur lors de l’envoi. Votre message a été sauvegardé localement.', 'danger');
+            });
+    } else {
+        saveContactMessage(templateParams);
+        showToast('EmailJS non configuré. Le message est sauvegardé localement.', 'warning');
+        form.reset();
+        console.warn('EmailJS non configuré. Remplacez CONFIG.emailjs_public_key par votre clé publique EmailJS.');
+    }
+}
+
+function saveContactMessage(message) {
+    const stored = JSON.parse(localStorage.getItem('lh_contact_messages') || '[]');
+    stored.unshift({ ...message, timestamp: new Date().toISOString() });
+    if (stored.length > 100) stored.splice(100);
+    localStorage.setItem('lh_contact_messages', JSON.stringify(stored));
+    sendAdminNotification({
+        title: 'Nouveau message contact',
+        message: `${message.from_name} · ${message.subject}`,
+        icon: 'envelope',
+        timestamp: Date.now(),
+    });
 }
 
 function initEmailJS() {
-    if (typeof emailjs !== 'undefined') {
-        emailjs.init('YOUR_PUBLIC_KEY');
+    if (typeof emailjs !== 'undefined'
+        && CONFIG.emailjs_public_key
+        && CONFIG.emailjs_public_key !== 'YOUR_PUBLIC_KEY') {
+        emailjs.init(CONFIG.emailjs_public_key);
+    } else if (typeof emailjs !== 'undefined') {
+        console.warn('EmailJS trouvé mais la clé publique n’est pas configurée.');
     }
 }
 
