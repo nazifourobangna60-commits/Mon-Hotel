@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LuxeHôtel — Réservations à Lomé, Togo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- ===== AUTH GATE (si non connecté) ===== -->
+    <div class="auth-gate" id="authGate" style="display:none;">
+        <div class="auth-gate-box">
+            <div class="auth-gate-icon"><i class="fas fa-hotel"></i></div>
+            <h2>Bienvenue chez LuxeHôtel</h2>
+            <p>Pour découvrir nos chambres et effectuer une réservation, veuillez vous connecter ou créer un compte gratuit.</p>
+            <div class="auth-gate-btns">
+                <a href="login.html" class="btn-gate-login">
+                    <i class="fas fa-sign-in-alt"></i> Se connecter
+                </a>
+                <a href="login.html?tab=register" class="btn-gate-register">
+                    <i class="fas fa-user-plus"></i> Créer un compte
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== NAVBAR ===== -->
+    <nav class="navbar">
+        <a href="#" class="logo" onclick="hideAdminPanel(); return false;">
+            <i class="fas fa-hotel"></i>
+            LuxeHôtel
+        </a>
+        <div class="nav-links">
+            <a href="#rooms">Nos Chambres</a>
+            <a href="#services">Services</a>
+            <a href="#contact">Contact</a>
+
+            <!-- Utilisateur connecté -->
+            <div class="nav-user-badge" id="navUser" style="display:none;" onclick="window.location.href='client.html'">
+                <div class="nav-user-avatar">
+                    <img src="" alt="" style="display:none;">
+                    <span class="nav-user-initials">?</span>
+                </div>
+                <span class="nav-user-name">Client</span>
+            </div>
+
+            <!-- Boutons non connecté -->
+            <div id="navGuest" style="display:flex; gap:0.75rem; align-items:center;">
+                <a href="client.html" class="admin-btn" style="background:transparent;color:var(--primary);border:1.5px solid var(--border);">
+                    <i class="fas fa-user"></i> Espace Client
+                </a>
+                <a href="login.html" class="admin-btn">
+                    <i class="fas fa-sign-in-alt"></i> Connexion
+                </a>
+            </div>
+
+            <!-- Admin connecté -->
+            <div id="navAdmin" style="display:none; gap:0.75rem; align-items:center;">
+                <button onclick="toggleNotifications()" class="admin-btn" style="background:transparent;color:var(--primary);border:1.5px solid var(--border);cursor:pointer;">
+                    <i class="fas fa-bell"></i>
+                </button>
+                <button onclick="openAdminPanel()" class="admin-btn" style="cursor:pointer;">
+                    <i class="fas fa-cog"></i> Administration
+                </button>
+                <button onclick="logout()" class="admin-btn" style="background:var(--accent);cursor:pointer;">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ===== HERO ===== -->
+    <section class="hero">
+        <div class="hero-content">
+            <div class="hero-tag">
+                <i class="fas fa-map-marker-alt"></i>
+                Lomé, Togo — Ouvert 24h/24
+            </div>
+            <h1>Une expérience<br>hôtelière d'exception</h1>
+            <p>Réservez votre séjour dans notre hôtel de luxe au cœur de Lomé.<br>Chambres élégantes, services premium, souvenirs inoubliables.</p>
+            <div class="hero-btns">
+                <a href="#rooms" class="cta-button">
+                    <i class="fas fa-bed"></i> Voir les chambres
+                </a>
+                <a href="#contact" class="cta-button-outline">
+                    <i class="fas fa-phone"></i> Nous contacter
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== FILTERS ===== -->
+    <div class="filters" id="rooms">
+        <div class="filter-container">
+            <span style="font-size:0.82rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.06em;margin-right:0.5rem;">Filtrer :</span>
+            <button class="filter-btn active" onclick="filterRooms('all')">Toutes les chambres</button>
+            <button class="filter-btn" onclick="filterRooms('standard')">Standard</button>
+            <button class="filter-btn" onclick="filterRooms('deluxe')">Deluxe</button>
+            <button class="filter-btn" onclick="filterRooms('suite')">Suite</button>
+            <button class="filter-btn" onclick="filterRooms('presidentielle')">Présidentielle</button>
+        </div>
+    </div>
+
+    <!-- ===== ROOMS GRID ===== -->
+    <section class="rooms-section">
+        <h2 class="section-title">Nos Chambres</h2>
+        <p class="section-subtitle">Choisissez parmi nos hébergements soigneusement aménagés pour votre confort</p>
+        <div class="rooms-grid" id="roomsGrid">
+            <!-- Généré par JS -->
+        </div>
+    </section>
+
+    <!-- ===== SERVICES ===== -->
+    <section class="services-section" id="services">
+        <div style="max-width:1300px;margin:0 auto;">
+            <h2 class="section-title">Nos Services</h2>
+            <p class="section-subtitle">Tout ce dont vous avez besoin pour un séjour parfait</p>
+            <div class="services-grid">
+                <div class="service-card">
+                    <i class="fas fa-utensils"></i>
+                    <h3>Restaurant Gastronomique</h3>
+                    <p>Une cuisine raffinée préparée par nos chefs, avec des ingrédients frais et locaux. Saveurs africaines et internationales.</p>
+                </div>
+                <div class="service-card">
+                    <i class="fas fa-spa"></i>
+                    <h3>Spa & Bien-être</h3>
+                    <p>Détendez-vous dans notre spa luxueux avec massages, soins du visage et piscine à débordement.</p>
+                </div>
+                <div class="service-card">
+                    <i class="fas fa-concierge-bell"></i>
+                    <h3>Conciergerie 24h/24</h3>
+                    <p>Notre équipe dévouée est disponible à toute heure pour répondre à toutes vos demandes.</p>
+                </div>
+                <div class="service-card">
+                    <i class="fas fa-car"></i>
+                    <h3>Navette & Voiturier</h3>
+                    <p>Service de transfert aéroport, parking sécurisé et voiturier pour votre confort optimal.</p>
+                </div>
+                <div class="service-card">
+                    <i class="fas fa-wifi"></i>
+                    <h3>WiFi Haut Débit</h3>
+                    <p>Connexion internet ultra-rapide et gratuite dans toutes les chambres et espaces communs.</p>
+                </div>
+                <div class="service-card">
+                    <i class="fas fa-dumbbell"></i>
+                    <h3>Centre de Fitness</h3>
+                    <p>Salle de sport moderne ouverte 7j/7, équipée des dernières machines de musculation et cardio.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== CONTACT ===== -->
+    <section class="contact-section" id="contact">
+        <div style="max-width:1300px;margin:0 auto;">
+            <h2 class="section-title" style="color:white;">Contactez-nous</h2>
+            <p class="section-subtitle" style="color:rgba(255,255,255,0.7);">Notre équipe est disponible pour répondre à toutes vos questions</p>
+            <div class="contact-content">
+                <div class="contact-info">
+                    <div class="info-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <div>
+                            <h4>Adresse</h4>
+                            <p>123 Boulevard de la Marina<br>BP 4400 — Lomé, Togo</p>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-phone"></i>
+                        <div>
+                            <h4>Téléphone</h4>
+                            <p>+228 92 02 37 53<br>+228 22 XX XX XX</p>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-envelope"></i>
+                        <div>
+                            <h4>Email</h4>
+                            <p>contact@luxehotel.tg<br>reservations@luxehotel.tg</p>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-clock"></i>
+                        <div>
+                            <h4>Horaires Réception</h4>
+                            <p>Lundi – Dimanche : 24h/24<br>Service de conciergerie permanent</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="contact-form">
+                    <h3 style="font-family:'Playfair Display',serif;margin-bottom:1.5rem;font-size:1.3rem;">Envoyer un message</h3>
+                    <form onsubmit="handleContact(event)">
+                        <div class="form-group">
+                            <label>Nom complet</label>
+                            <input type="text" name="name" required placeholder="Votre nom">
+                        </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" name="email" required placeholder="votre@email.com">
+                        </div>
+                        <div class="form-group">
+                            <label>Sujet</label>
+                            <input type="text" name="subject" required placeholder="Objet de votre demande">
+                        </div>
+                        <div class="form-group">
+                            <label>Message</label>
+                            <textarea name="message" required placeholder="Votre message..." rows="4"></textarea>
+                        </div>
+                        <button type="submit" class="submit-btn">
+                            <i class="fas fa-paper-plane"></i> Envoyer le message
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== BOOKING MODAL ===== -->
+    <div class="modal" id="bookingModal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeBookingModal()" aria-label="Fermer">&times;</button>
+            <h2 style="font-family:'Playfair Display',serif;margin-bottom:0.3rem;font-size:1.6rem;">Réservation</h2>
+            <p id="bookingRoomTitle" style="color:var(--text-muted);font-size:0.875rem;margin-bottom:1.5rem;"></p>
+
+            <form id="bookingForm" onsubmit="handleBooking(event)">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+                    <div class="form-group">
+                        <label>Nom complet *</label>
+                        <input type="text" id="guestName" required placeholder="Votre nom">
+                    </div>
+                    <div class="form-group">
+                        <label>Email *</label>
+                        <input type="email" id="guestEmail" required placeholder="votre@email.com">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Téléphone</label>
+                    <input type="tel" id="guestPhone" placeholder="+228 XX XX XX">
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+                    <div class="form-group">
+                        <label>Date d'arrivée *</label>
+                        <input type="date" id="checkIn" required onchange="calculateTotal()">
+                    </div>
+                    <div class="form-group">
+                        <label>Date de départ *</label>
+                        <input type="date" id="checkOut" required onchange="calculateTotal()">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Nombre de personnes</label>
+                    <select id="guests">
+                        <option value="1">1 personne</option>
+                        <option value="2" selected>2 personnes</option>
+                        <option value="3">3 personnes</option>
+                        <option value="4">4 personnes</option>
+                        <option value="5">5+ personnes</option>
+                    </select>
+                </div>
+                <div class="booking-summary">
+                    <strong>Total estimé</strong>
+                    <span class="total-amount" id="totalPrice">0€</span>
+                </div>
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-calendar-check"></i> Confirmer la réservation
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ===== ADMIN LOGIN MODAL ===== -->
+    <div class="modal" id="loginModal">
+        <div class="modal-content" style="max-width:400px;">
+            <button class="close-modal" onclick="closeLoginModal()">&times;</button>
+            <div class="login-form">
+                <h2><i class="fas fa-shield-halved" style="color:var(--gold);"></i> Espace Administrateur</h2>
+                <p style="color:var(--text-muted);font-size:0.875rem;margin-bottom:1.5rem;">Accès réservé au personnel autorisé</p>
+                <form onsubmit="handleLogin(event)">
+                    <div class="form-group" style="text-align:left;">
+                        <label>Mot de passe</label>
+                        <div class="password-input">
+                            <input type="password" id="adminPassword" required placeholder="Mot de passe administrateur">
+                            <i class="fas fa-eye toggle-password" onclick="togglePassword()"></i>
+                        </div>
+                    </div>
+                    <button type="submit" class="submit-btn">
+                        <i class="fas fa-sign-in-alt"></i> Accéder au panneau admin
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== ADMIN PANEL ===== -->
+    <div class="admin-panel" id="adminPanel">
+        <div class="admin-header">
+            <div style="display:flex;align-items:center;gap:1rem;">
+                <i class="fas fa-hotel" style="color:var(--gold);font-size:1.4rem;"></i>
+                <h2 style="font-family:'Playfair Display',serif;font-size:1.4rem;">LuxeHôtel — Administration</h2>
+            </div>
+            <nav class="admin-nav">
+                <a href="#" class="active" onclick="showAdminSection('dashboard')"><i class="fas fa-chart-line"></i> Tableau de bord</a>
+                <a href="#" onclick="showAdminSection('rooms')"><i class="fas fa-bed"></i> Chambres</a>
+                <a href="#" onclick="showAdminSection('reservations')"><i class="fas fa-calendar-check"></i> Réservations</a>
+                <a href="#" onclick="showAdminSection('clients')"><i class="fas fa-users"></i> Clients</a>
+                <a href="#" onclick="logout()" style="color:var(--accent);"><i class="fas fa-sign-out-alt"></i> Déconnexion</a>
+            </nav>
+        </div>
+
+        <div class="admin-content">
+
+            <!-- DASHBOARD -->
+            <div id="dashboardSection">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon blue"><i class="fas fa-bed"></i></div>
+                        <div class="stat-info"><h3 id="totalRooms">0</h3><p>Chambres totales</p></div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon green"><i class="fas fa-check-circle"></i></div>
+                        <div class="stat-info"><h3 id="availableRooms">0</h3><p>Disponibles</p></div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon red"><i class="fas fa-times-circle"></i></div>
+                        <div class="stat-info"><h3 id="occupiedRooms">0</h3><p>Occupées</p></div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon gold"><i class="fas fa-coins"></i></div>
+                        <div class="stat-info"><h3 id="totalRevenue">0€</h3><p>Revenus totaux</p></div>
+                    </div>
+                </div>
+                <div class="admin-section">
+                    <h3 style="margin-bottom:1rem;font-size:1.1rem;font-weight:600;">Activité récente</h3>
+                    <div id="recentActivity"></div>
+                </div>
+            </div>
+
+            <!-- ROOMS -->
+            <div id="roomsSection" style="display:none;">
+                <div class="admin-section">
+                    <div class="section-header">
+                        <h3 style="font-size:1.1rem;font-weight:600;">Gestion des Chambres</h3>
+                        <button class="add-room-btn" onclick="showAddRoomModal()">
+                            <i class="fas fa-plus"></i> Ajouter une chambre
+                        </button>
+                    </div>
+                    <div style="overflow-x:auto;">
+                        <table class="rooms-table">
+                            <thead>
+                                <tr>
+                                    <th>Photo</th>
+                                    <th>Numéro</th>
+                                    <th>Type</th>
+                                    <th>Prix/nuit</th>
+                                    <th>Statut</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminRoomsTable"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RESERVATIONS -->
+            <div id="reservationsSection" style="display:none;">
+                <div class="admin-section">
+                    <h3 style="margin-bottom:1.5rem;font-size:1.1rem;font-weight:600;">Réservations</h3>
+                    <div id="reservationsList"></div>
+                </div>
+            </div>
+
+            <!-- CLIENTS -->
+            <div id="clientsSection" style="display:none;">
+                <div class="admin-section">
+                    <h3 style="margin-bottom:1.5rem;font-size:1.1rem;font-weight:600;">Clients inscrits</h3>
+                    <div id="clientsList" style="overflow-x:auto;"></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ===== ADD ROOM MODAL ===== -->
+    <div class="modal" id="addRoomModal">
+        <div class="modal-content" style="max-width:600px;">
+            <button class="close-modal" onclick="closeAddRoomModal()">&times;</button>
+            <h2 style="font-family:'Playfair Display',serif;margin-bottom:1.5rem;">Ajouter une chambre</h2>
+            <form id="addRoomForm" onsubmit="handleAddRoom(event)">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+                    <div class="form-group">
+                        <label>Numéro *</label>
+                        <input type="text" id="roomNumber" required placeholder="ex: 105">
+                    </div>
+                    <div class="form-group">
+                        <label>Type *</label>
+                        <select id="roomType" required>
+                            <option value="standard">Standard</option>
+                            <option value="deluxe">Deluxe</option>
+                            <option value="suite">Suite</option>
+                            <option value="presidentielle">Présidentielle</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Prix par nuit (€) *</label>
+                    <input type="number" id="roomPrice" required min="1" placeholder="150">
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="roomDesc" rows="3" placeholder="Description de la chambre..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Photos</label>
+                    <div class="upload-zone" id="uploadZone" onclick="document.getElementById('roomImages').click()">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <p>Cliquez ou glissez des images ici</p>
+                        <small style="color:var(--text-muted);">JPG, PNG, WebP · Max 8MB par image</small>
+                    </div>
+                    <input type="file" id="roomImages" multiple accept="image/*" style="display:none;" onchange="handleImageUpload(event)">
+                    <div class="image-preview" id="imagePreview"></div>
+                </div>
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-plus"></i> Ajouter la chambre
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ===== EDIT ROOM MODAL ===== -->
+    <div class="modal" id="editRoomModal">
+        <div class="modal-content" style="max-width:560px;">
+            <button class="close-modal" onclick="closeEditRoomModal()">&times;</button>
+            <h2 style="font-family:'Playfair Display',serif;margin-bottom:1.5rem;">Modifier la chambre</h2>
+            <form id="editRoomForm" onsubmit="handleEditRoom(event)">
+                <input type="hidden" id="editRoomId">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+                    <div class="form-group">
+                        <label>Numéro *</label>
+                        <input type="text" id="editRoomNumber" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Type *</label>
+                        <select id="editRoomType" required>
+                            <option value="standard">Standard</option>
+                            <option value="deluxe">Deluxe</option>
+                            <option value="suite">Suite</option>
+                            <option value="presidentielle">Présidentielle</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Prix par nuit (€) *</label>
+                    <input type="number" id="editRoomPrice" required min="1">
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="editRoomDesc" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Statut</label>
+                    <select id="editRoomStatus">
+                        <option value="available">Disponible</option>
+                        <option value="occupied">Occupée</option>
+                    </select>
+                </div>
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-save"></i> Enregistrer les modifications
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ===== NOTIFICATIONS PANEL ===== -->
+    <div class="notification-panel" id="notificationPanel">
+        <div class="notification-header">
+            <h4><i class="fas fa-bell"></i> Notifications</h4>
+            <button onclick="toggleNotifications()"><i class="fas fa-times"></i></button>
+        </div>
+        <div id="notificationList"></div>
+    </div>
+
+    <!-- ===== TOAST ===== -->
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMessage">Opération réussie</span>
+    </div>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3><i class="fas fa-hotel"></i> LuxeHôtel</h3>
+                <p>Une expérience d'exception au cœur de Lomé. Chambres luxueuses, service impeccable, souvenirs inoubliables.</p>
+                <div class="social-links">
+                    <a href="#" title="Facebook"><i class="fab fa-facebook"></i></a>
+                    <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                    <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h3>Contact</h3>
+                <p>
+                    <i class="fas fa-map-marker-alt" style="color:var(--gold);margin-right:0.4rem;"></i>
+                    123 Boulevard de la Marina, Lomé, Togo<br><br>
+                    <i class="fas fa-phone" style="color:var(--gold);margin-right:0.4rem;"></i>
+                    +228 92 02 37 53<br><br>
+                    <i class="fas fa-envelope" style="color:var(--gold);margin-right:0.4rem;"></i>
+                    contact@luxehotel.tg<br><br>
+                    <i class="fas fa-clock" style="color:var(--gold);margin-right:0.4rem;"></i>
+                    Ouvert 24h/24, 7j/7
+                </p>
+            </div>
+            <div class="footer-section">
+                <h3>Liens rapides</h3>
+                <ul>
+                    <li><a href="#rooms">Nos chambres</a></li>
+                    <li><a href="#services">Nos services</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                    <li><a href="client.html">Espace client</a></li>
+                    <li><a href="login.html">Connexion</a></li>
+                    <li><a href="#" onclick="showLoginModal(); return false;">Administration</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 LuxeHôtel — Tous droits réservés</p>
+            <p style="font-size:0.78rem;">Fait avec <i class="fas fa-heart" style="color:var(--accent);"></i> à Lomé, Togo</p>
+        </div>
+    </footer>
+
+    <!-- EmailJS -->
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script src="js/app.js"></script>
+
+    <script>
+    // Gérer l'affichage des boutons de nav selon la session
+    document.addEventListener('DOMContentLoaded', () => {
+        const session = localStorage.getItem('lh_session')
+            || localStorage.getItem('currentUser')
+            || localStorage.getItem('currentClient');
+        const adminSess = localStorage.getItem('currentAdmin');
+
+        const navGuest = document.getElementById('navGuest');
+        const navUser = document.getElementById('navUser');
+        const navAdmin = document.getElementById('navAdmin');
+
+        if (adminSess) {
+            if (navGuest) navGuest.style.display = 'none';
+            if (navUser) navUser.style.display = 'none';
+            if (navAdmin) navAdmin.style.display = 'flex';
+        } else if (session) {
+            if (navGuest) navGuest.style.display = 'none';
+            if (navAdmin) navAdmin.style.display = 'none';
+            if (navUser) navUser.style.display = 'flex';
+            try {
+                const u = JSON.parse(session);
+                const nameEl = navUser?.querySelector('.nav-user-name');
+                const initialsEl = navUser?.querySelector('.nav-user-initials');
+                const photoEl = navUser?.querySelector('.nav-user-avatar img');
+                const name = u.name || u.email?.split('@')[0] || 'Client';
+                if (nameEl) nameEl.textContent = name.split(' ')[0];
+                if (initialsEl) initialsEl.textContent = name.split(' ').map(w => w[0]).join('').substring(0, 2).toUpperCase();
+                if (photoEl && u.profilePhoto) {
+                    photoEl.src = u.profilePhoto;
+                    photoEl.style.display = 'block';
+                    if (initialsEl) initialsEl.style.display = 'none';
+                }
+            } catch(e) {}
+        } else {
+            if (navGuest) navGuest.style.display = 'flex';
+            if (navUser) navUser.style.display = 'none';
+            if (navAdmin) navAdmin.style.display = 'none';
+        }
+    });
+
+    // Fermer les modals avec Escape
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') {
+            document.querySelectorAll('.modal.active').forEach(m => m.classList.remove('active'));
+            document.getElementById('notificationPanel')?.classList.remove('active');
+        }
+    });
+
+    // Fermer modal en cliquant en dehors
+    document.querySelectorAll('.modal').forEach(modal => {
+        modal.addEventListener('click', e => {
+            if (e.target === modal) {
+                modal.classList.remove('active');
+            }
+        });
+    });
+    </script>
+</body>
+</html>

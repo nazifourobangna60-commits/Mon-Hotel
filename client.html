@@ -1,0 +1,1532 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LuxeHôtel — Espace Client</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #1a1a2e;
+            --secondary: #16213e;
+            --accent: #e94560;
+            --gold: #c9a84c;
+            --gold-light: #f0d890;
+            --light: #f7f5f0;
+            --white: #ffffff;
+            --border: #e8e4dc;
+            --text-muted: #8a8680;
+            --success: #2d9e6e;
+            --success-bg: #edfaf4;
+            --warn: #c07a1e;
+            --warn-bg: #fef7ed;
+            --sidebar-w: 260px;
+            --nav-h: 64px;
+            --shadow-sm: 0 2px 8px rgba(0,0,0,0.06);
+            --shadow-md: 0 8px 24px rgba(0,0,0,0.1);
+            --radius: 12px;
+            --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--light);
+            color: var(--primary);
+            min-height: 100vh;
+        }
+
+        /* ===== NAVBAR ===== */
+        .topnav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: var(--nav-h);
+            background: var(--white);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            padding: 0 1.5rem;
+            z-index: 200;
+            gap: 1rem;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            text-decoration: none;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.35rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .nav-brand-icon {
+            width: 34px; height: 34px;
+            background: var(--gold);
+            border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            color: var(--primary); font-size: 0.85rem;
+        }
+
+        .nav-spacer { flex: 1; }
+
+        .nav-greeting {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        .nav-greeting strong { color: var(--primary); }
+
+        .nav-avatar {
+            width: 36px; height: 36px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: var(--white);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.8rem; font-weight: 600;
+            overflow: hidden;
+            cursor: pointer;
+            border: 2px solid var(--border);
+            transition: border-color 0.2s;
+        }
+
+        .nav-avatar:hover { border-color: var(--gold); }
+        .nav-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+        .nav-menu-btn {
+            display: none;
+            background: none; border: none;
+            font-size: 1.2rem; color: var(--primary); cursor: pointer;
+        }
+
+        /* ===== LAYOUT ===== */
+        .client-layout {
+            display: flex;
+            padding-top: var(--nav-h);
+            min-height: 100vh;
+        }
+
+        /* ===== SIDEBAR ===== */
+        .sidebar {
+            width: var(--sidebar-w);
+            background: var(--primary);
+            position: fixed;
+            top: var(--nav-h);
+            left: 0;
+            bottom: 0;
+            overflow-y: auto;
+            z-index: 100;
+            transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-content {
+            flex: 1;
+            padding: 1.5rem 1rem;
+        }
+
+        .sidebar-section-label {
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: rgba(255,255,255,0.3);
+            padding: 0 0.75rem;
+            margin-bottom: 0.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .sidebar-section-label:first-child { margin-top: 0; }
+
+        .sidebar-nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 0.75rem;
+            border-radius: 8px;
+            cursor: pointer;
+            color: rgba(255,255,255,0.6);
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: var(--transition);
+            text-decoration: none;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+        }
+
+        .sidebar-nav-item:hover {
+            background: rgba(255,255,255,0.06);
+            color: rgba(255,255,255,0.9);
+        }
+
+        .sidebar-nav-item.active {
+            background: rgba(201,168,76,0.18);
+            color: var(--gold-light);
+        }
+
+        .sidebar-nav-item i { width: 18px; font-size: 0.9rem; }
+
+        .sidebar-footer {
+            padding: 1rem;
+            border-top: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .sidebar-logout {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            border-radius: 8px;
+            cursor: pointer;
+            color: rgba(233,69,96,0.8);
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: var(--transition);
+            background: none;
+            border: none;
+            width: 100%;
+        }
+
+        .sidebar-logout:hover {
+            background: rgba(233,69,96,0.12);
+            color: var(--accent);
+        }
+
+        /* ===== MAIN ===== */
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-w);
+            padding: 2rem;
+            min-height: calc(100vh - var(--nav-h));
+        }
+
+        /* PAGE SECTIONS */
+        .page-section { display: none; }
+        .page-section.active { display: block; }
+
+        /* PAGE HEADER */
+        .page-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .page-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--primary);
+            line-height: 1.2;
+        }
+
+        .page-subtitle {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            margin-top: 0.2rem;
+        }
+
+        /* STATS CARDS */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 1.25rem 1.5rem;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .stat-icon {
+            width: 44px; height: 44px;
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1rem; flex-shrink: 0;
+        }
+
+        .stat-icon.blue { background: #e8f4fd; color: #2980b9; }
+        .stat-icon.green { background: var(--success-bg); color: var(--success); }
+        .stat-icon.gold { background: #fef7ed; color: var(--gold); }
+
+        .stat-value {
+            font-size: 1.7rem;
+            font-weight: 700;
+            color: var(--primary);
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 0.2rem;
+        }
+
+        /* CARDS */
+        .card {
+            background: var(--white);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .card-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .card-body { padding: 1.5rem; }
+
+        /* RESERVATION CARDS */
+        .res-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.25rem;
+        }
+
+        .res-card {
+            background: var(--white);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            padding: 1.25rem;
+            transition: var(--transition);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .res-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .res-card-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .res-room-name {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.28rem 0.7rem;
+            border-radius: 100px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .badge-confirmed { background: var(--success-bg); color: var(--success); }
+        .badge-pending { background: var(--warn-bg); color: var(--warn); }
+        .badge-cancelled { background: #fdf2f1; color: #c0392b; }
+
+        .res-detail-list { margin: 0.75rem 0; }
+
+        .res-detail-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.45rem 0;
+            border-bottom: 1px solid #f0ede8;
+            font-size: 0.875rem;
+        }
+
+        .res-detail-row:last-child { border-bottom: none; }
+        .res-detail-key { color: var(--text-muted); display: flex; align-items: center; gap: 0.4rem; }
+        .res-detail-val { font-weight: 500; color: var(--primary); }
+
+        .res-actions {
+            display: flex;
+            gap: 0.6rem;
+            margin-top: 1rem;
+        }
+
+        .btn-sm {
+            flex: 1;
+            padding: 0.55rem;
+            border: 1.5px solid var(--border);
+            background: var(--white);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            transition: var(--transition);
+            display: flex; align-items: center; justify-content: center; gap: 0.4rem;
+        }
+
+        .btn-sm:hover { border-color: var(--primary); color: var(--primary); }
+        .btn-sm.danger:hover { border-color: var(--accent); color: var(--accent); }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--text-muted);
+        }
+
+        .empty-state i { font-size: 2.5rem; margin-bottom: 1rem; opacity: 0.3; display: block; }
+        .empty-state h3 { color: var(--primary); margin-bottom: 0.4rem; font-size: 1.1rem; }
+        .empty-state p { font-size: 0.875rem; }
+
+        /* ===== PROFILE ===== */
+        .profile-layout {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 1.5rem;
+        }
+
+        /* PHOTO CARD */
+        .photo-card {
+            background: var(--white);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            padding: 2rem 1.5rem;
+            text-align: center;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .avatar-wrap {
+            position: relative;
+            width: 120px; height: 120px;
+            margin: 0 auto 1.25rem;
+        }
+
+        .avatar-img {
+            width: 120px; height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2.5rem; color: var(--white);
+            overflow: hidden;
+            border: 3px solid var(--border);
+        }
+
+        .avatar-img img {
+            width: 100%; height: 100%; object-fit: cover; border-radius: 50%;
+            display: none;
+        }
+
+        .avatar-edit-btn {
+            position: absolute;
+            bottom: 3px; right: 3px;
+            width: 30px; height: 30px;
+            background: var(--gold);
+            border: 2px solid var(--white);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer;
+            color: var(--primary);
+            font-size: 0.7rem;
+            transition: var(--transition);
+        }
+
+        .avatar-edit-btn:hover {
+            background: var(--primary);
+            color: var(--gold);
+            transform: scale(1.1);
+        }
+
+        .photo-name {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 0.2rem;
+        }
+
+        .photo-email { font-size: 0.825rem; color: var(--text-muted); margin-bottom: 1.5rem; }
+
+        .photo-upload-hint {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            padding: 0.6rem;
+            background: var(--light);
+            border-radius: 8px;
+            margin-bottom: 1.25rem;
+            line-height: 1.5;
+        }
+
+        .profile-stats-row {
+            display: flex;
+            justify-content: space-around;
+            padding-top: 1.25rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .ps-item { text-align: center; }
+        .ps-val { font-size: 1.5rem; font-weight: 700; color: var(--accent); }
+        .ps-lbl { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.1rem; }
+
+        /* FORM CARD */
+        .form-card {
+            background: var(--white);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+        }
+
+        .form-section-head {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .form-section-head h3 { font-size: 1rem; font-weight: 600; }
+        .form-section-head p { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.2rem; }
+
+        .form-body { padding: 1.5rem; }
+
+        .form-row-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .form-group { margin-bottom: 1.1rem; }
+
+        .form-label {
+            display: block;
+            font-size: 0.78rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--primary);
+            margin-bottom: 0.4rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.78rem 0.9rem;
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.9rem;
+            color: var(--primary);
+            background: var(--white);
+            transition: var(--transition);
+            outline: none;
+        }
+
+        .form-input:focus {
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(201,168,76,0.1);
+        }
+
+        .form-input:disabled { background: var(--light); cursor: not-allowed; color: var(--text-muted); }
+
+        select.form-input { -webkit-appearance: none; cursor: pointer; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='1.5' fill='none'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 0.9rem center; padding-right: 2.5rem; }
+
+        /* BUTTONS */
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background: var(--primary);
+            color: var(--white);
+            border: none;
+            border-radius: 8px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(233,69,96,0.25);
+        }
+
+        .btn-secondary {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.7rem 1.5rem;
+            background: var(--white);
+            color: var(--primary);
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-secondary:hover { border-color: var(--primary); }
+
+        /* TABLE */
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .history-table th {
+            background: var(--light);
+            padding: 0.9rem 1rem;
+            text-align: left;
+            font-size: 0.78rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .history-table td {
+            padding: 0.9rem 1rem;
+            font-size: 0.875rem;
+            border-bottom: 1px solid #f2eeea;
+        }
+
+        .history-table tr:last-child td { border-bottom: none; }
+        .history-table tr:hover td { background: var(--light); }
+
+        /* TOAST */
+        .toast-zone {
+            position: fixed;
+            bottom: 1.5rem; right: 1.5rem;
+            z-index: 999;
+            display: flex; flex-direction: column; gap: 0.5rem;
+        }
+
+        .toast-msg {
+            background: var(--primary);
+            color: var(--white);
+            padding: 0.85rem 1.2rem;
+            border-radius: var(--radius);
+            font-size: 0.875rem;
+            font-weight: 500;
+            display: flex; align-items: center; gap: 0.5rem;
+            box-shadow: var(--shadow-md);
+            animation: slideIn 0.3s ease;
+            max-width: 300px;
+        }
+
+        .toast-msg.success { background: var(--success); }
+        .toast-msg.error { background: #c0392b; }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        /* MODAL */
+        .modal-overlay {
+            display: none;
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.45);
+            z-index: 500;
+            align-items: center; justify-content: center;
+            padding: 1rem;
+        }
+
+        .modal-overlay.open { display: flex; }
+
+        .modal-box {
+            background: var(--white);
+            border-radius: 16px;
+            max-width: 480px;
+            width: 100%;
+            box-shadow: 0 24px 64px rgba(0,0,0,0.2);
+            animation: modalIn 0.3s ease;
+        }
+
+        @keyframes modalIn {
+            from { opacity: 0; transform: scale(0.95) translateY(-10px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .modal-head {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: space-between;
+        }
+
+        .modal-head h3 { font-size: 1.1rem; font-weight: 600; }
+        .modal-close { background: none; border: none; font-size: 1.1rem; cursor: pointer; color: var(--text-muted); }
+        .modal-close:hover { color: var(--primary); }
+        .modal-body { padding: 1.5rem; }
+        .modal-footer { padding: 1.25rem 1.5rem; border-top: 1px solid var(--border); display: flex; gap: 0.75rem; justify-content: flex-end; }
+
+        /* RESPONSIVE */
+        @media (max-width: 1024px) {
+            .profile-layout { grid-template-columns: 1fr; }
+            .photo-card { display: flex; align-items: center; gap: 1.5rem; text-align: left; padding: 1.5rem; }
+            .avatar-wrap { flex-shrink: 0; margin: 0; }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.open { transform: translateX(0); }
+            .main-content { margin-left: 0; padding: 1rem; }
+            .nav-menu-btn { display: block; }
+            .res-grid { grid-template-columns: 1fr; }
+            .stats-row { grid-template-columns: 1fr 1fr; }
+            .form-row-2 { grid-template-columns: 1fr; }
+            .page-header { flex-direction: column; align-items: flex-start; }
+        }
+
+        .sidebar-overlay {
+            display: none;
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.4); z-index: 99;
+        }
+
+        .sidebar-overlay.open { display: block; }
+    </style>
+</head>
+<body>
+
+<div class="toast-zone" id="toastZone"></div>
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+<!-- ===== TOPNAV ===== -->
+<nav class="topnav">
+    <button class="nav-menu-btn" onclick="toggleSidebar()">
+        <i class="fas fa-bars"></i>
+    </button>
+    <a href="index.html" class="nav-brand">
+        <div class="nav-brand-icon"><i class="fas fa-hotel"></i></div>
+        LuxeHôtel
+    </a>
+    <div class="nav-spacer"></div>
+    <div class="nav-greeting">Bonjour, <strong id="navName">Client</strong></div>
+    <div class="nav-avatar" id="navAvatar" onclick="goSection('profile')">
+        <img id="navAvatarImg" src="" alt="" style="display:none;">
+        <span id="navAvatarInitials">?</span>
+    </div>
+</nav>
+
+<!-- ===== LAYOUT ===== -->
+<div class="client-layout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-content">
+            <div class="sidebar-section-label">Navigation</div>
+            <button class="sidebar-nav-item active" data-section="dashboard" onclick="goSection('dashboard')">
+                <i class="fas fa-th-large"></i> Tableau de bord
+            </button>
+            <button class="sidebar-nav-item" data-section="reservations" onclick="goSection('reservations')">
+                <i class="fas fa-calendar-check"></i> Mes réservations
+            </button>
+            <button class="sidebar-nav-item" data-section="history" onclick="goSection('history')">
+                <i class="fas fa-clock-rotate-left"></i> Historique
+            </button>
+
+            <div class="sidebar-section-label">Compte</div>
+            <button class="sidebar-nav-item" data-section="profile" onclick="goSection('profile')">
+                <i class="fas fa-user-circle"></i> Mon profil
+            </button>
+            <button class="sidebar-nav-item" data-section="settings" onclick="goSection('settings')">
+                <i class="fas fa-sliders"></i> Paramètres
+            </button>
+
+            <div class="sidebar-section-label">Hôtel</div>
+            <a href="index.html#rooms" class="sidebar-nav-item">
+                <i class="fas fa-bed"></i> Réserver une chambre
+            </a>
+            <a href="index.html#contact" class="sidebar-nav-item">
+                <i class="fas fa-headset"></i> Contacter l'hôtel
+            </a>
+        </div>
+        <div class="sidebar-footer">
+            <button class="sidebar-logout" onclick="doLogout()">
+                <i class="fas fa-arrow-right-from-bracket"></i> Déconnexion
+            </button>
+        </div>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main-content">
+
+        <!-- ===== DASHBOARD ===== -->
+        <div class="page-section active" id="sec-dashboard">
+            <div class="page-header">
+                <div>
+                    <div class="page-title">Bonjour, <span id="dashName">Client</span> !</div>
+                    <div class="page-subtitle" id="dashDate"></div>
+                </div>
+                <a href="index.html#rooms" class="btn-primary">
+                    <i class="fas fa-plus"></i> Nouvelle réservation
+                </a>
+            </div>
+
+            <div class="stats-row">
+                <div class="stat-card">
+                    <div class="stat-icon blue"><i class="fas fa-calendar-check"></i></div>
+                    <div>
+                        <div class="stat-value" id="statTotalRes">0</div>
+                        <div class="stat-label">Réservations actives</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon gold"><i class="fas fa-moon"></i></div>
+                    <div>
+                        <div class="stat-value" id="statNights">0</div>
+                        <div class="stat-label">Nuits réservées</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon green"><i class="fas fa-clock"></i></div>
+                    <div>
+                        <div class="stat-value" id="statNextCheckin">—</div>
+                        <div class="stat-label">Prochain check-in</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">Réservations à venir</span>
+                    <button class="btn-secondary" onclick="goSection('reservations')">Voir tout <i class="fas fa-arrow-right" style="font-size:0.7rem;"></i></button>
+                </div>
+                <div class="card-body">
+                    <div class="res-grid" id="dashResList"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== RESERVATIONS ===== -->
+        <div class="page-section" id="sec-reservations">
+            <div class="page-header">
+                <div>
+                    <div class="page-title">Mes Réservations</div>
+                    <div class="page-subtitle">Gérez vos séjours passés et à venir</div>
+                </div>
+                <a href="index.html#rooms" class="btn-primary">
+                    <i class="fas fa-plus"></i> Nouvelle réservation
+                </a>
+            </div>
+            <div class="res-grid" id="allResList"></div>
+        </div>
+
+        <!-- ===== HISTORY ===== -->
+        <div class="page-section" id="sec-history">
+            <div class="page-header">
+                <div>
+                    <div class="page-title">Historique</div>
+                    <div class="page-subtitle">Tous vos séjours à LuxeHôtel</div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body" style="padding: 0; overflow-x: auto;">
+                    <table class="history-table">
+                        <thead>
+                            <tr>
+                                <th>Chambre</th>
+                                <th>Arrivée</th>
+                                <th>Départ</th>
+                                <th>Durée</th>
+                                <th>Montant</th>
+                                <th>Statut</th>
+                            </tr>
+                        </thead>
+                        <tbody id="historyBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== PROFILE ===== -->
+        <div class="page-section" id="sec-profile">
+            <div class="page-header">
+                <div>
+                    <div class="page-title">Mon Profil</div>
+                    <div class="page-subtitle">Gérez vos informations personnelles</div>
+                </div>
+            </div>
+
+            <div class="profile-layout">
+                <!-- Photo Card -->
+                <div class="photo-card">
+                    <div class="avatar-wrap">
+                        <div class="avatar-img" id="avatarDisplay">
+                            <img id="avatarPhoto" src="" alt="Photo de profil">
+                            <i class="fas fa-user" id="avatarIcon"></i>
+                        </div>
+                        <div class="avatar-edit-btn" onclick="triggerPhotoUpload()" title="Changer la photo">
+                            <i class="fas fa-camera"></i>
+                        </div>
+                    </div>
+                    <input type="file" id="photoFileInput" accept="image/*" style="display:none;" onchange="handlePhotoUpload(event)">
+
+                    <div class="photo-name" id="profileDisplayName">Client</div>
+                    <div class="photo-email" id="profileDisplayEmail">—</div>
+                    <div class="photo-upload-hint">
+                        <i class="fas fa-info-circle"></i>
+                        Cliquez sur l'icône <i class="fas fa-camera"></i> pour ajouter ou changer votre photo de profil.
+                        Formats acceptés : JPG, PNG, WebP. Taille max : 5 MB.
+                    </div>
+
+                    <div class="profile-stats-row">
+                        <div class="ps-item">
+                            <div class="ps-val" id="profileStatRes">0</div>
+                            <div class="ps-lbl">Réservations</div>
+                        </div>
+                        <div class="ps-item">
+                            <div class="ps-val" id="profileStatNights">0</div>
+                            <div class="ps-lbl">Nuits</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Form Card -->
+                <div class="form-card">
+                    <div class="form-section-head">
+                        <h3>Informations personnelles</h3>
+                        <p>Mettez à jour vos informations de profil</p>
+                    </div>
+                    <div class="form-body">
+                        <div class="form-row-2">
+                            <div class="form-group">
+                                <label class="form-label">Prénom</label>
+                                <input type="text" class="form-input" id="pfFirstName" placeholder="Prénom">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Nom</label>
+                                <input type="text" class="form-input" id="pfLastName" placeholder="Nom">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Adresse e-mail</label>
+                            <input type="email" class="form-input" id="pfEmail" placeholder="Email">
+                        </div>
+                        <div class="form-row-2">
+                            <div class="form-group">
+                                <label class="form-label">Pays</label>
+                                <input type="text" class="form-input" id="pfCountry" placeholder="Pays">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Téléphone</label>
+                                <input type="tel" class="form-input" id="pfPhone" placeholder="+228 XX XX XX">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Sexe</label>
+                            <select class="form-input" id="pfSex">
+                                <option value="">— Sélectionner —</option>
+                                <option value="male">Homme</option>
+                                <option value="female">Femme</option>
+                                <option value="other">Autre</option>
+                            </select>
+                        </div>
+
+                        <div class="form-section-head" style="padding: 0; margin: 1.25rem 0 1rem; border: none; border-top: 1px solid var(--border); padding-top: 1.25rem;">
+                            <h3>Changer le mot de passe</h3>
+                            <p>Laissez vide pour ne pas changer</p>
+                        </div>
+                        <div class="form-row-2">
+                            <div class="form-group">
+                                <label class="form-label">Nouveau mot de passe</label>
+                                <input type="password" class="form-input" id="pfNewPwd" placeholder="••••••••">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Confirmer le mot de passe</label>
+                                <input type="password" class="form-input" id="pfConfirmPwd" placeholder="••••••••">
+                            </div>
+                        </div>
+
+                        <div style="display: flex; gap: 0.75rem; margin-top: 0.5rem;">
+                            <button class="btn-primary" onclick="saveProfile()">
+                                <i class="fas fa-save"></i> Enregistrer
+                            </button>
+                            <button class="btn-secondary" onclick="loadProfile()">
+                                <i class="fas fa-rotate-left"></i> Annuler
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== SETTINGS ===== -->
+        <div class="page-section" id="sec-settings">
+            <div class="page-header">
+                <div>
+                    <div class="page-title">Paramètres</div>
+                    <div class="page-subtitle">Préférences de votre compte</div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header"><span class="card-title">Notifications</span></div>
+                <div class="card-body">
+                    <p style="color: var(--text-muted); font-size: 0.875rem;">Les préférences de notification seront disponibles prochainement.</p>
+                </div>
+            </div>
+
+            <div class="card" style="margin-top: 1.25rem;">
+                <div class="card-header"><span class="card-title">Données du compte</span></div>
+                <div class="card-body">
+                    <p style="font-size: 0.875rem; color: var(--text-muted); margin-bottom: 1rem;">
+                        Vous pouvez supprimer votre compte et toutes vos données associées.
+                    </p>
+                    <button class="btn-secondary" onclick="confirmDeleteAccount()" style="border-color: #c0392b; color: #c0392b;">
+                        <i class="fas fa-trash"></i> Supprimer mon compte
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+</div>
+
+<!-- MODAL CONFIRM CANCEL -->
+<div class="modal-overlay" id="cancelModal">
+    <div class="modal-box">
+        <div class="modal-head">
+            <h3><i class="fas fa-triangle-exclamation" style="color:var(--accent);"></i> Annuler la réservation</h3>
+            <button class="modal-close" onclick="closeModal('cancelModal')"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="modal-body">
+            <p style="font-size:0.9rem; color:var(--text-muted);">
+                Êtes-vous sûr de vouloir annuler cette réservation ?<br>
+                <strong style="color:var(--primary)" id="cancelResName"></strong><br>
+                Cette action ne peut pas être annulée.
+            </p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-secondary" onclick="closeModal('cancelModal')">Retour</button>
+            <button class="btn-primary" style="background:var(--accent);" onclick="confirmCancel()" id="cancelConfirmBtn">Confirmer l'annulation</button>
+        </div>
+    </div>
+</div>
+
+<script>
+// ============================================================
+// STATE
+// ============================================================
+let currentUser = null;
+let reservations = [];
+let cancelTargetId = null;
+
+// ============================================================
+// INIT
+// ============================================================
+document.addEventListener('DOMContentLoaded', () => {
+    // Lecture session (multi-source pour compatibilité)
+    const raw = localStorage.getItem('lh_session')
+        || localStorage.getItem('currentClient')
+        || localStorage.getItem('currentUser');
+
+    if (!raw) {
+        window.location.href = 'login.html';
+        return;
+    }
+
+    try {
+        currentUser = JSON.parse(raw);
+    } catch(e) {
+        window.location.href = 'login.html';
+        return;
+    }
+
+    if (!currentUser || !currentUser.email) {
+        window.location.href = 'login.html';
+        return;
+    }
+
+    loadReservationsFromStorage();
+    initUI();
+    setDashDate();
+});
+
+function setDashDate() {
+    const now = new Date();
+    const opts = { weekday:'long', year:'numeric', month:'long', day:'numeric' };
+    document.getElementById('dashDate').textContent = now.toLocaleDateString('fr-FR', opts);
+}
+
+// ============================================================
+// DATA
+// ============================================================
+function loadReservationsFromStorage() {
+    const all = JSON.parse(localStorage.getItem('reservations') || '[]');
+    // Filtrer les réservations de l'utilisateur courant
+    reservations = all.filter(r =>
+        r.guestEmail === currentUser.email ||
+        r.userId === currentUser.id ||
+        r.guestEmail === currentUser.email
+    );
+
+    // Si pas de réservations et compte démo, ajouter des exemples
+    if (reservations.length === 0 && currentUser.email.includes('demo')) {
+        reservations = getSampleReservations();
+    }
+}
+
+function getSampleReservations() {
+    return [
+        {
+            id: 'RES-001', roomId: 1,
+            room: 'Suite Présidentielle',
+            roomType: 'presidentielle',
+            guestEmail: currentUser.email,
+            checkIn: '2026-06-15', checkOut: '2026-06-18',
+            nights: 3, price: 1800, status: 'confirmed',
+            guests: 2, date: '2026-05-01'
+        },
+        {
+            id: 'RES-002', roomId: 2,
+            room: 'Chambre Deluxe 201',
+            roomType: 'deluxe',
+            guestEmail: currentUser.email,
+            checkIn: '2026-07-10', checkOut: '2026-07-12',
+            nights: 2, price: 400, status: 'pending',
+            guests: 1, date: '2026-05-10'
+        }
+    ];
+}
+
+// ============================================================
+// NAVIGATION
+// ============================================================
+function goSection(sec) {
+    document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.sidebar-nav-item').forEach(b => b.classList.remove('active'));
+    document.getElementById('sec-' + sec).classList.add('active');
+    document.querySelector(`.sidebar-nav-item[data-section="${sec}"]`)?.classList.add('active');
+    closeSidebar();
+
+    if (sec === 'dashboard') renderDashboard();
+    else if (sec === 'reservations') renderReservations('allResList');
+    else if (sec === 'history') renderHistory();
+    else if (sec === 'profile') loadProfile();
+}
+
+function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('open');
+    document.getElementById('sidebarOverlay').classList.toggle('open');
+}
+
+function closeSidebar() {
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('sidebarOverlay').classList.remove('open');
+}
+
+// ============================================================
+// UI INIT
+// ============================================================
+function initUI() {
+    const name = currentUser.name || currentUser.email.split('@')[0];
+    const initials = name.split(' ').map(w => w[0]).join('').substring(0, 2).toUpperCase();
+
+    document.getElementById('navName').textContent = name.split(' ')[0];
+    document.getElementById('navAvatarInitials').textContent = initials;
+    document.getElementById('dashName').textContent = name.split(' ')[0];
+
+    if (currentUser.profilePhoto) {
+        setNavPhoto(currentUser.profilePhoto);
+    }
+
+    renderDashboard();
+}
+
+function setNavPhoto(src) {
+    const img = document.getElementById('navAvatarImg');
+    const initEl = document.getElementById('navAvatarInitials');
+    if (src) { img.src = src; img.style.display = 'block'; initEl.style.display = 'none'; }
+    else { img.style.display = 'none'; initEl.style.display = 'block'; }
+}
+
+// ============================================================
+// RENDER DASHBOARD
+// ============================================================
+function renderDashboard() {
+    const active = reservations.filter(r => r.status !== 'cancelled');
+    const nights = active.reduce((s, r) => s + (r.nights || calcNights(r.checkIn, r.checkOut)), 0);
+    const upcoming = active.filter(r => new Date(r.checkIn) >= new Date())
+        .sort((a, b) => new Date(a.checkIn) - new Date(b.checkIn));
+
+    document.getElementById('statTotalRes').textContent = active.length;
+    document.getElementById('statNights').textContent = nights;
+    document.getElementById('statNextCheckin').textContent =
+        upcoming.length ? formatDateShort(upcoming[0].checkIn) : '—';
+
+    const container = document.getElementById('dashResList');
+    if (upcoming.length === 0) {
+        container.innerHTML = `<div class="empty-state" style="grid-column:1/-1;">
+            <i class="fas fa-calendar-xmark"></i>
+            <h3>Aucune réservation à venir</h3>
+            <p>Découvrez nos chambres et effectuez votre première réservation.</p>
+        </div>`;
+    } else {
+        container.innerHTML = upcoming.slice(0, 3).map(r => renderResCard(r)).join('');
+    }
+}
+
+// ============================================================
+// RENDER RESERVATIONS
+// ============================================================
+function renderReservations(containerId) {
+    const container = document.getElementById(containerId);
+    if (reservations.length === 0) {
+        container.innerHTML = `<div class="empty-state" style="grid-column:1/-1;">
+            <i class="fas fa-bed"></i>
+            <h3>Pas encore de réservation</h3>
+            <p>Réservez votre première chambre dès maintenant.</p>
+        </div>`;
+        return;
+    }
+    container.innerHTML = reservations.map(r => renderResCard(r)).join('');
+}
+
+function renderResCard(r) {
+    const nights = r.nights || calcNights(r.checkIn, r.checkOut);
+    const label = { confirmed: 'Confirmée', pending: 'En attente', cancelled: 'Annulée' }[r.status] || r.status;
+    const badge = { confirmed: 'badge-confirmed', pending: 'badge-pending', cancelled: 'badge-cancelled' }[r.status] || '';
+    return `
+    <div class="res-card">
+        <div class="res-card-top">
+            <div class="res-room-name">${r.room || 'Chambre'}</div>
+            <span class="status-badge ${badge}">${label}</span>
+        </div>
+        <div class="res-detail-list">
+            <div class="res-detail-row">
+                <span class="res-detail-key"><i class="fas fa-calendar-arrow-down"></i> Arrivée</span>
+                <span class="res-detail-val">${formatDate(r.checkIn)}</span>
+            </div>
+            <div class="res-detail-row">
+                <span class="res-detail-key"><i class="fas fa-calendar-arrow-up"></i> Départ</span>
+                <span class="res-detail-val">${formatDate(r.checkOut)}</span>
+            </div>
+            <div class="res-detail-row">
+                <span class="res-detail-key"><i class="fas fa-moon"></i> Durée</span>
+                <span class="res-detail-val">${nights} nuit${nights > 1 ? 's' : ''}</span>
+            </div>
+            <div class="res-detail-row">
+                <span class="res-detail-key"><i class="fas fa-dollar-sign"></i> Total</span>
+                <span class="res-detail-val" style="color:var(--accent);font-weight:700;">${formatPrice(r.price || r.totalPrice)}</span>
+            </div>
+        </div>
+        ${r.status !== 'cancelled' ? `
+        <div class="res-actions">
+            <button class="btn-sm" onclick="modifyRes('${r.id}')"><i class="fas fa-pen"></i> Modifier</button>
+            <button class="btn-sm danger" onclick="askCancel('${r.id}', '${escHtml(r.room)}')"><i class="fas fa-xmark"></i> Annuler</button>
+        </div>` : ''}
+    </div>`;
+}
+
+// ============================================================
+// HISTORY
+// ============================================================
+function renderHistory() {
+    const tbody = document.getElementById('historyBody');
+    if (reservations.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:2rem;">Aucun historique disponible</td></tr>`;
+        return;
+    }
+    tbody.innerHTML = reservations.map(r => {
+        const nights = r.nights || calcNights(r.checkIn, r.checkOut);
+        const badge = { confirmed: 'badge-confirmed', pending: 'badge-pending', cancelled: 'badge-cancelled' }[r.status] || '';
+        const label = { confirmed: 'Confirmée', pending: 'En attente', cancelled: 'Annulée' }[r.status] || r.status;
+        return `<tr>
+            <td><strong>${r.room || 'N/A'}</strong></td>
+            <td>${formatDate(r.checkIn)}</td>
+            <td>${formatDate(r.checkOut)}</td>
+            <td>${nights} nuit${nights > 1 ? 's' : ''}</td>
+            <td style="font-weight:600;color:var(--accent);">${formatPrice(r.price || r.totalPrice)}</td>
+            <td><span class="status-badge ${badge}">${label}</span></td>
+        </tr>`;
+    }).join('');
+}
+
+// ============================================================
+// CANCEL
+// ============================================================
+function askCancel(id, room) {
+    cancelTargetId = id;
+    document.getElementById('cancelResName').textContent = room;
+    openModal('cancelModal');
+}
+
+function confirmCancel() {
+    if (!cancelTargetId) return;
+    const res = reservations.find(r => r.id == cancelTargetId);
+    if (res) res.status = 'cancelled';
+
+    // Sync localStorage
+    syncReservationsToStorage();
+
+    closeModal('cancelModal');
+    showToast('Réservation annulée', 'error');
+    cancelTargetId = null;
+
+    // Refresh current view
+    renderReservations('allResList');
+    renderDashboard();
+}
+
+function syncReservationsToStorage() {
+    const all = JSON.parse(localStorage.getItem('reservations') || '[]');
+    reservations.forEach(r => {
+        const idx = all.findIndex(a => a.id == r.id);
+        if (idx >= 0) all[idx] = r;
+        else all.push(r);
+    });
+    localStorage.setItem('reservations', JSON.stringify(all));
+}
+
+function modifyRes(id) {
+    showToast('Contactez la réception pour modifier votre réservation — Tél: +228 92 02 37 53', 'default');
+}
+
+// ============================================================
+// PROFILE
+// ============================================================
+function loadProfile() {
+    const u = currentUser;
+    const name = u.name || '';
+    const parts = name.split(' ');
+    const firstName = parts[0] || '';
+    const lastName = parts.slice(1).join(' ') || '';
+
+    document.getElementById('pfFirstName').value = firstName;
+    document.getElementById('pfLastName').value = lastName;
+    document.getElementById('pfEmail').value = u.email || '';
+    document.getElementById('pfCountry').value = u.country || '';
+    document.getElementById('pfPhone').value = u.phone || '';
+
+    const sex = u.sex || '';
+    const sexEl = document.getElementById('pfSex');
+    for (let o of sexEl.options) { o.selected = o.value === sex; }
+
+    document.getElementById('profileDisplayName').textContent = name || 'Client';
+    document.getElementById('profileDisplayEmail').textContent = u.email || '—';
+
+    const activeCount = reservations.filter(r => r.status !== 'cancelled').length;
+    const nights = reservations.reduce((s, r) => s + (r.nights || calcNights(r.checkIn, r.checkOut)), 0);
+    document.getElementById('profileStatRes').textContent = activeCount;
+    document.getElementById('profileStatNights').textContent = nights;
+
+    // Photo
+    if (u.profilePhoto) {
+        loadAvatarPhoto(u.profilePhoto);
+    } else {
+        document.getElementById('avatarPhoto').style.display = 'none';
+        document.getElementById('avatarIcon').style.display = 'inline';
+    }
+}
+
+function saveProfile() {
+    const firstName = document.getElementById('pfFirstName').value.trim();
+    const lastName = document.getElementById('pfLastName').value.trim();
+    const email = document.getElementById('pfEmail').value.trim();
+    const country = document.getElementById('pfCountry').value.trim();
+    const phone = document.getElementById('pfPhone').value.trim();
+    const sex = document.getElementById('pfSex').value;
+    const newPwd = document.getElementById('pfNewPwd').value;
+    const confirmPwd = document.getElementById('pfConfirmPwd').value;
+
+    if (!firstName || !email) {
+        showToast('Prénom et email sont requis.', 'error'); return;
+    }
+
+    if (newPwd && newPwd !== confirmPwd) {
+        showToast('Les mots de passe ne correspondent pas.', 'error'); return;
+    }
+
+    currentUser.name = firstName + (lastName ? ' ' + lastName : '');
+    currentUser.email = email;
+    currentUser.country = country;
+    currentUser.phone = phone;
+    currentUser.sex = sex;
+    if (newPwd) currentUser.password = newPwd;
+
+    // Sync dans les stores
+    localStorage.setItem('lh_session', JSON.stringify(currentUser));
+    localStorage.setItem('currentUser', JSON.stringify(currentUser));
+    localStorage.setItem('currentClient', JSON.stringify(currentUser));
+
+    const users = JSON.parse(localStorage.getItem('lh_users') || '[]');
+    const idx = users.findIndex(u => u.id === currentUser.id || u.email === currentUser.email);
+    if (idx >= 0) {
+        users[idx] = { ...users[idx], ...currentUser };
+        localStorage.setItem('lh_users', JSON.stringify(users));
+    }
+
+    // Aussi mettre à jour clientUsers (compatibilité)
+    const clientUsers = JSON.parse(localStorage.getItem('clientUsers') || '[]');
+    const ci = clientUsers.findIndex(u => u.email === currentUser.email);
+    if (ci >= 0) { clientUsers[ci] = { ...clientUsers[ci], ...currentUser }; localStorage.setItem('clientUsers', JSON.stringify(clientUsers)); }
+
+    // Refresh UI
+    document.getElementById('navName').textContent = currentUser.name.split(' ')[0];
+    document.getElementById('dashName').textContent = currentUser.name.split(' ')[0];
+    document.getElementById('profileDisplayName').textContent = currentUser.name;
+
+    document.getElementById('pfNewPwd').value = '';
+    document.getElementById('pfConfirmPwd').value = '';
+
+    showToast('Profil enregistré avec succès !', 'success');
+}
+
+// ============================================================
+// PHOTO UPLOAD
+// ============================================================
+function triggerPhotoUpload() {
+    document.getElementById('photoFileInput').click();
+}
+
+function handlePhotoUpload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+        showToast('Fichier invalide. Choisissez une image.', 'error'); return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+        showToast('L\'image doit faire moins de 5 MB.', 'error'); return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = e => {
+        const dataUrl = e.target.result;
+
+        // Mettre à jour l'UI
+        loadAvatarPhoto(dataUrl);
+        setNavPhoto(dataUrl);
+
+        // Persister
+        currentUser.profilePhoto = dataUrl;
+        localStorage.setItem('lh_session', JSON.stringify(currentUser));
+        localStorage.setItem('currentUser', JSON.stringify(currentUser));
+        localStorage.setItem('currentClient', JSON.stringify(currentUser));
+
+        const users = JSON.parse(localStorage.getItem('lh_users') || '[]');
+        const idx = users.findIndex(u => u.id === currentUser.id || u.email === currentUser.email);
+        if (idx >= 0) { users[idx].profilePhoto = dataUrl; localStorage.setItem('lh_users', JSON.stringify(users)); }
+
+        const clientUsers = JSON.parse(localStorage.getItem('clientUsers') || '[]');
+        const ci = clientUsers.findIndex(u => u.email === currentUser.email);
+        if (ci >= 0) { clientUsers[ci].profilePhoto = dataUrl; localStorage.setItem('clientUsers', JSON.stringify(clientUsers)); }
+
+        showToast('Photo de profil mise à jour !', 'success');
+    };
+    reader.readAsDataURL(file);
+    event.target.value = '';
+}
+
+function loadAvatarPhoto(src) {
+    const img = document.getElementById('avatarPhoto');
+    const icon = document.getElementById('avatarIcon');
+    if (src) {
+        img.src = src;
+        img.style.display = 'block';
+        icon.style.display = 'none';
+    } else {
+        img.style.display = 'none';
+        icon.style.display = 'inline';
+    }
+}
+
+// ============================================================
+// DELETE ACCOUNT
+// ============================================================
+function confirmDeleteAccount() {
+    if (!confirm('ATTENTION : Cette action supprimera définitivement votre compte et toutes vos données. Continuer ?')) return;
+    localStorage.removeItem('lh_session');
+    localStorage.removeItem('currentUser');
+    localStorage.removeItem('currentClient');
+    // Remove from users list
+    const users = JSON.parse(localStorage.getItem('lh_users') || '[]')
+        .filter(u => u.email !== currentUser.email);
+    localStorage.setItem('lh_users', JSON.stringify(users));
+    window.location.href = 'login.html';
+}
+
+// ============================================================
+// LOGOUT
+// ============================================================
+function doLogout() {
+    localStorage.removeItem('lh_session');
+    localStorage.removeItem('currentUser');
+    localStorage.removeItem('currentClient');
+    window.location.href = 'login.html';
+}
+
+// ============================================================
+// MODAL
+// ============================================================
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+// ============================================================
+// TOAST
+// ============================================================
+function showToast(msg, type = 'default') {
+    const zone = document.getElementById('toastZone');
+    const t = document.createElement('div');
+    t.className = `toast-msg ${type}`;
+    const icons = { success: 'check-circle', error: 'exclamation-circle', default: 'info-circle' };
+    t.innerHTML = `<i class="fas fa-${icons[type] || 'info-circle'}"></i> ${msg}`;
+    zone.appendChild(t);
+    setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 300); }, 4000);
+}
+
+// ============================================================
+// HELPERS
+// ============================================================
+function formatDate(d) {
+    if (!d) return '—';
+    return new Date(d + 'T00:00:00').toLocaleDateString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric' });
+}
+
+function formatDateShort(d) {
+    if (!d) return '—';
+    return new Date(d + 'T00:00:00').toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
+}
+
+function formatPrice(p) {
+    if (!p) return '0 FCFA';
+    return Number(p).toLocaleString('fr-FR') + ' €';
+}
+
+function calcNights(ci, co) {
+    if (!ci || !co) return 0;
+    return Math.max(0, Math.round((new Date(co) - new Date(ci)) / (1000*60*60*24)));
+}
+
+function escHtml(s) {
+    return String(s || '').replace(/'/g, "\\'");
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,1417 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LuxeHôtel — Connexion & Inscription</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #1a1a2e;
+            --secondary: #16213e;
+            --accent: #e94560;
+            --gold: #c9a84c;
+            --gold-light: #f0d890;
+            --light: #f7f5f0;
+            --white: #ffffff;
+            --border: #e2ddd5;
+            --text-muted: #8a8680;
+            --success: #2d9e6e;
+            --error: #c0392b;
+            --shadow-sm: 0 2px 8px rgba(0,0,0,0.08);
+            --shadow-md: 0 8px 32px rgba(0,0,0,0.12);
+            --shadow-lg: 0 20px 60px rgba(0,0,0,0.18);
+            --radius: 12px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--light);
+            color: var(--primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ===== LAYOUT ===== */
+        .auth-wrapper {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* LEFT PANEL */
+        .auth-panel-left {
+            width: 45%;
+            background: var(--primary);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 3rem;
+            overflow: hidden;
+        }
+
+        .auth-panel-left::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: 
+                radial-gradient(ellipse 80% 60% at 20% 80%, rgba(201,168,76,0.15) 0%, transparent 60%),
+                radial-gradient(ellipse 60% 80% at 80% 20%, rgba(233,69,96,0.1) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .auth-panel-left::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 500px;
+            height: 500px;
+            border-radius: 50%;
+            border: 1px solid rgba(201,168,76,0.12);
+            pointer-events: none;
+        }
+
+        .left-top {
+            position: relative;
+            z-index: 2;
+        }
+
+        .hotel-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+            margin-bottom: 3rem;
+        }
+
+        .brand-icon {
+            width: 44px;
+            height: 44px;
+            background: var(--gold);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-size: 1.1rem;
+        }
+
+        .brand-name {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.6rem;
+            font-weight: 600;
+            color: var(--white);
+            letter-spacing: 0.02em;
+        }
+
+        .left-hero {
+            position: relative;
+            z-index: 2;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .left-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(201,168,76,0.15);
+            border: 1px solid rgba(201,168,76,0.3);
+            color: var(--gold-light);
+            padding: 0.4rem 1rem;
+            border-radius: 100px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
+        }
+
+        .left-hero h1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(2.2rem, 3vw, 3.2rem);
+            font-weight: 600;
+            color: var(--white);
+            line-height: 1.2;
+            margin-bottom: 1rem;
+        }
+
+        .left-hero h1 em {
+            font-style: italic;
+            color: var(--gold-light);
+        }
+
+        .left-hero p {
+            color: rgba(255,255,255,0.6);
+            line-height: 1.7;
+            font-size: 0.95rem;
+            max-width: 360px;
+        }
+
+        .left-features {
+            position: relative;
+            z-index: 2;
+            margin-top: 2.5rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            color: rgba(255,255,255,0.7);
+            font-size: 0.85rem;
+        }
+
+        .feature-item i {
+            color: var(--gold);
+            font-size: 0.9rem;
+            width: 16px;
+        }
+
+        .left-bottom {
+            position: relative;
+            z-index: 2;
+            border-top: 1px solid rgba(255,255,255,0.08);
+            padding-top: 2rem;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: rgba(255,255,255,0.5);
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: var(--transition);
+        }
+
+        .back-link:hover {
+            color: var(--gold-light);
+        }
+
+        /* RIGHT PANEL */
+        .auth-panel-right {
+            flex: 1;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 2rem 3rem;
+            background: var(--white);
+            overflow-y: auto;
+            max-height: 100vh;
+        }
+
+        .auth-form-wrapper {
+            width: 100%;
+            max-width: 480px;
+            padding: 1rem 0;
+        }
+
+        /* TABS */
+        .auth-tabs {
+            display: flex;
+            background: var(--light);
+            border-radius: var(--radius);
+            padding: 4px;
+            margin-bottom: 2.5rem;
+            position: relative;
+        }
+
+        .auth-tab-btn {
+            flex: 1;
+            padding: 0.75rem;
+            background: none;
+            border: none;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            cursor: pointer;
+            border-radius: 8px;
+            transition: var(--transition);
+            position: relative;
+            z-index: 1;
+        }
+
+        .auth-tab-btn.active {
+            background: var(--white);
+            color: var(--primary);
+            font-weight: 600;
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* FORM TITLE */
+        .form-section-title {
+            margin-bottom: 2rem;
+        }
+
+        .form-section-title h2 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.9rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 0.3rem;
+        }
+
+        .form-section-title p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* FORM */
+        .auth-form { display: none; }
+        .auth-form.active { display: block; }
+
+        .form-group {
+            margin-bottom: 1.3rem;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.82rem 1rem;
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.95rem;
+            color: var(--primary);
+            background: var(--white);
+            transition: var(--transition);
+            outline: none;
+            appearance: none;
+            -webkit-appearance: none;
+        }
+
+        .form-input:focus {
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(201,168,76,0.12);
+        }
+
+        .form-input::placeholder { color: #bbb; }
+
+        select.form-input { cursor: pointer; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='1.5' fill='none'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 1rem center; padding-right: 2.5rem; }
+
+        .phone-row {
+            display: flex;
+            gap: 0.6rem;
+        }
+
+        .phone-code-display {
+            flex-shrink: 0;
+            width: 90px;
+            padding: 0.82rem 0.8rem;
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius);
+            background: var(--light);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .phone-input { flex: 1; }
+
+        .input-icon-wrap {
+            position: relative;
+        }
+
+        .input-icon-wrap .form-input {
+            padding-right: 2.8rem;
+        }
+
+        .input-icon-wrap .toggle-eye {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: var(--text-muted);
+            transition: color 0.2s;
+            font-size: 0.9rem;
+        }
+
+        .toggle-eye:hover { color: var(--primary); }
+
+        /* GENDER SELECTOR */
+        .gender-group {
+            display: flex;
+            gap: 0.6rem;
+        }
+
+        .gender-btn {
+            flex: 1;
+            padding: 0.75rem;
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius);
+            background: var(--white);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.88rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.4rem;
+        }
+
+        .gender-btn.selected {
+            border-color: var(--primary);
+            background: var(--primary);
+            color: var(--white);
+        }
+
+        /* PASSWORD STRENGTH */
+        .password-strength {
+            margin-top: 0.5rem;
+            display: none;
+        }
+
+        .password-strength.visible { display: block; }
+
+        .strength-bar {
+            height: 3px;
+            border-radius: 2px;
+            background: #e0e0e0;
+            margin-bottom: 0.3rem;
+            overflow: hidden;
+        }
+
+        .strength-fill {
+            height: 100%;
+            border-radius: 2px;
+            transition: width 0.3s, background 0.3s;
+            width: 0%;
+        }
+
+        .strength-text {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        /* CHECKBOX */
+        .checkbox-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.7rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .checkbox-row input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            margin-top: 1px;
+            flex-shrink: 0;
+            accent-color: var(--primary);
+            cursor: pointer;
+        }
+
+        .checkbox-row label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+            cursor: pointer;
+        }
+
+        .checkbox-row a { color: var(--gold); text-decoration: none; font-weight: 500; }
+
+        /* SUBMIT BTN */
+        .btn-submit {
+            width: 100%;
+            padding: 0.95rem;
+            background: var(--primary);
+            color: var(--white);
+            border: none;
+            border-radius: var(--radius);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-submit:hover {
+            background: var(--accent);
+            transform: translateY(-1px);
+            box-shadow: 0 8px 24px rgba(233,69,96,0.3);
+        }
+
+        .btn-submit:active { transform: translateY(0); }
+
+        .btn-submit.loading {
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+        .spinner-inline {
+            display: none;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255,255,255,0.4);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+        }
+
+        .btn-submit.loading .spinner-inline { display: block; }
+        .btn-submit.loading .btn-text { opacity: 0.6; }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* DIVIDER */
+        .or-divider {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 1.5rem 0;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .or-divider::before, .or-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        /* FORM FOOTER */
+        .form-footer-link {
+            text-align: center;
+            margin-top: 1.5rem;
+            font-size: 0.88rem;
+            color: var(--text-muted);
+        }
+
+        .form-footer-link a {
+            color: var(--primary);
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .form-footer-link a:hover { color: var(--accent); }
+
+        /* ALERT */
+        .form-alert {
+            padding: 0.9rem 1rem;
+            border-radius: var(--radius);
+            font-size: 0.88rem;
+            margin-bottom: 1.3rem;
+            display: none;
+            align-items: flex-start;
+            gap: 0.6rem;
+            line-height: 1.5;
+        }
+
+        .form-alert.show { display: flex; }
+
+        .form-alert.success {
+            background: #edfaf4;
+            border: 1px solid #b7e9d3;
+            color: var(--success);
+        }
+
+        .form-alert.error {
+            background: #fdf2f1;
+            border: 1px solid #f5c0bb;
+            color: var(--error);
+        }
+
+        /* FORGOT PASSWORD */
+        .forgot-link {
+            text-align: right;
+            margin-bottom: 1.5rem;
+        }
+
+        .forgot-link a {
+            font-size: 0.83rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .forgot-link a:hover { color: var(--primary); }
+
+        /* REMEMBER ME */
+        .remember-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+        }
+
+        .remember-left {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .remember-left input { accent-color: var(--primary); cursor: pointer; }
+        .remember-left label { cursor: pointer; }
+
+        /* FORM TWO COLS */
+        .form-row-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 900px) {
+            .auth-panel-left { display: none; }
+            .auth-panel-right { padding: 2rem 1.5rem; align-items: flex-start; }
+        }
+
+        @media (max-width: 480px) {
+            .auth-panel-right { padding: 1.5rem 1rem; }
+            .form-row-2 { grid-template-columns: 1fr; }
+        }
+
+        /* TOAST */
+        .toast-container {
+            position: fixed;
+            bottom: 1.5rem;
+            right: 1.5rem;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .toast-item {
+            background: var(--primary);
+            color: var(--white);
+            padding: 0.9rem 1.3rem;
+            border-radius: var(--radius);
+            font-size: 0.88rem;
+            font-weight: 500;
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            animation: toastIn 0.3s ease;
+            max-width: 320px;
+        }
+
+        .toast-item.success { background: var(--success); }
+        .toast-item.error { background: var(--error); }
+
+        @keyframes toastIn {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        /* COUNTRY SEARCH */
+        .country-search-wrap {
+            position: relative;
+        }
+
+        .country-search-input {
+            width: 100%;
+            padding: 0.65rem 1rem 0.65rem 2.2rem;
+            border: 1.5px solid var(--border);
+            border-radius: 8px 8px 0 0;
+            font-size: 0.85rem;
+            outline: none;
+            border-bottom: none;
+            background: var(--light);
+        }
+
+        .country-search-icon {
+            position: absolute;
+            left: 0.7rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+
+        select#registerCountry {
+            border-radius: 0 0 var(--radius) var(--radius);
+            border-top: none;
+        }
+
+        /* SELECT SIZE */
+        select#registerCountry { height: 150px; }
+    </style>
+</head>
+<body>
+
+<!-- Toast Container -->
+<div class="toast-container" id="toastContainer"></div>
+
+<div class="auth-wrapper">
+
+    <!-- ===== LEFT PANEL ===== -->
+    <div class="auth-panel-left">
+        <div class="left-top">
+            <a href="index.html" class="hotel-brand">
+                <div class="brand-icon"><i class="fas fa-hotel"></i></div>
+                <span class="brand-name">LuxeHôtel</span>
+            </a>
+        </div>
+
+        <div class="left-hero">
+            <div class="left-tag">
+                <i class="fas fa-star"></i>
+                Lomé, Togo
+            </div>
+            <h1>Votre séjour<br><em>d'exception</em><br>commence ici</h1>
+            <p>Connectez-vous pour accéder à vos réservations, gérer votre profil et découvrir nos offres exclusives.</p>
+            <div class="left-features">
+                <div class="feature-item"><i class="fas fa-check-circle"></i> Réservation instantanée</div>
+                <div class="feature-item"><i class="fas fa-check-circle"></i> Annulation flexible</div>
+                <div class="feature-item"><i class="fas fa-check-circle"></i> Suivi en temps réel</div>
+                <div class="feature-item"><i class="fas fa-check-circle"></i> Support 24h/24</div>
+            </div>
+        </div>
+
+        <div class="left-bottom">
+            <a href="index.html" class="back-link">
+                <i class="fas fa-arrow-left"></i>
+                Retour au site principal
+            </a>
+        </div>
+    </div>
+
+    <!-- ===== RIGHT PANEL ===== -->
+    <div class="auth-panel-right">
+        <div class="auth-form-wrapper">
+
+            <!-- Tabs -->
+            <div class="auth-tabs">
+                <button class="auth-tab-btn active" id="tabLoginBtn" onclick="switchTab('login')">
+                    <i class="fas fa-sign-in-alt"></i> Se connecter
+                </button>
+                <button class="auth-tab-btn" id="tabRegisterBtn" onclick="switchTab('register')">
+                    <i class="fas fa-user-plus"></i> Créer un compte
+                </button>
+            </div>
+
+            <!-- ===== FORM LOGIN ===== -->
+            <div class="auth-form active" id="loginForm">
+                <div class="form-section-title">
+                    <h2>Bon retour !</h2>
+                    <p>Connectez-vous à votre espace client</p>
+                </div>
+
+                <div class="form-alert" id="loginAlert"></div>
+
+                <div class="form-group">
+                    <label class="form-label">Adresse e-mail</label>
+                    <input type="email" class="form-input" id="loginEmail" placeholder="votre@email.com" autocomplete="email">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Mot de passe</label>
+                    <div class="input-icon-wrap">
+                        <input type="password" class="form-input" id="loginPassword" placeholder="••••••••" autocomplete="current-password">
+                        <i class="fas fa-eye toggle-eye" onclick="togglePwd('loginPassword', this)"></i>
+                    </div>
+                </div>
+
+                <div class="remember-row">
+                    <label class="remember-left">
+                        <input type="checkbox" id="rememberMe">
+                        <span>Se souvenir de moi</span>
+                    </label>
+                    <div class="forgot-link" style="margin: 0;">
+                        <a href="#" onclick="showForgotPwd(event)">Mot de passe oublié ?</a>
+                    </div>
+                </div>
+
+                <button class="btn-submit" onclick="doLogin()">
+                    <div class="spinner-inline"></div>
+                    <span class="btn-text"><i class="fas fa-sign-in-alt"></i> Se connecter</span>
+                </button>
+
+                <div class="form-footer-link">
+                    Pas encore de compte ? <a onclick="switchTab('register')">Créer un compte gratuit</a>
+                </div>
+            </div>
+
+            <!-- ===== FORM REGISTER ===== -->
+            <div class="auth-form" id="registerForm">
+                <div class="form-section-title">
+                    <h2>Créer un compte</h2>
+                    <p>Rejoignez LuxeHôtel et profitez de nos avantages</p>
+                </div>
+
+                <div class="form-alert" id="registerAlert"></div>
+
+                <div class="form-row-2">
+                    <div class="form-group">
+                        <label class="form-label">Prénom</label>
+                        <input type="text" class="form-input" id="regFirstName" placeholder="Prénom" autocomplete="given-name">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Nom</label>
+                        <input type="text" class="form-input" id="regLastName" placeholder="Nom de famille" autocomplete="family-name">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Adresse e-mail</label>
+                    <input type="email" class="form-input" id="regEmail" placeholder="votre@email.com" autocomplete="email">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Pays &amp; Code téléphonique</label>
+                    <div class="country-search-wrap">
+                        <i class="fas fa-search country-search-icon"></i>
+                        <input type="text" class="country-search-input" id="countrySearch" placeholder="Rechercher un pays..." oninput="filterCountries(this.value)">
+                    </div>
+                    <select class="form-input" id="registerCountry" onchange="updatePhoneCode()" size="5">
+                        <!-- Rempli par JS -->
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Numéro de téléphone</label>
+                    <div class="phone-row">
+                        <div class="phone-code-display" id="phoneCodeDisplay">+228</div>
+                        <input type="tel" class="form-input phone-input" id="regPhone" placeholder="90 12 34 56" autocomplete="tel">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Sexe</label>
+                    <div class="gender-group" id="genderGroup">
+                        <button type="button" class="gender-btn selected" data-value="male" onclick="selectGender('male')">
+                            <i class="fas fa-mars"></i> Homme
+                        </button>
+                        <button type="button" class="gender-btn" data-value="female" onclick="selectGender('female')">
+                            <i class="fas fa-venus"></i> Femme
+                        </button>
+                        <button type="button" class="gender-btn" data-value="other" onclick="selectGender('other')">
+                            <i class="fas fa-genderless"></i> Autre
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-row-2">
+                    <div class="form-group">
+                        <label class="form-label">Mot de passe</label>
+                        <div class="input-icon-wrap">
+                            <input type="password" class="form-input" id="regPassword" placeholder="••••••••" autocomplete="new-password" oninput="checkStrength(this.value)">
+                            <i class="fas fa-eye toggle-eye" onclick="togglePwd('regPassword', this)"></i>
+                        </div>
+                        <div class="password-strength" id="pwdStrength">
+                            <div class="strength-bar"><div class="strength-fill" id="strengthFill"></div></div>
+                            <span class="strength-text" id="strengthText"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Confirmer le mot de passe</label>
+                        <div class="input-icon-wrap">
+                            <input type="password" class="form-input" id="regConfirmPassword" placeholder="••••••••" autocomplete="new-password">
+                            <i class="fas fa-eye toggle-eye" onclick="togglePwd('regConfirmPassword', this)"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="checkbox-row">
+                    <input type="checkbox" id="agreeTerms">
+                    <label for="agreeTerms">J'accepte les <a href="#">conditions d'utilisation</a> et la <a href="#">politique de confidentialité</a> de LuxeHôtel.</label>
+                </div>
+
+                <button class="btn-submit" onclick="doRegister()">
+                    <div class="spinner-inline"></div>
+                    <span class="btn-text"><i class="fas fa-user-plus"></i> Créer mon compte</span>
+                </button>
+
+                <div class="form-footer-link">
+                    Déjà un compte ? <a onclick="switchTab('login')">Se connecter</a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+// ============================================================
+// LISTE COMPLÈTE DES PAYS DU MONDE (tous les pays + codes)
+// ============================================================
+const ALL_COUNTRIES = [
+    { name: "Togo", code: "+228", flag: "🇹🇬" },
+    { name: "Afghanistan", code: "+93", flag: "🇦🇫" },
+    { name: "Afrique du Sud", code: "+27", flag: "🇿🇦" },
+    { name: "Albanie", code: "+355", flag: "🇦🇱" },
+    { name: "Algérie", code: "+213", flag: "🇩🇿" },
+    { name: "Allemagne", code: "+49", flag: "🇩🇪" },
+    { name: "Andorre", code: "+376", flag: "🇦🇩" },
+    { name: "Angola", code: "+244", flag: "🇦🇴" },
+    { name: "Antigua-et-Barbuda", code: "+1268", flag: "🇦🇬" },
+    { name: "Arabie Saoudite", code: "+966", flag: "🇸🇦" },
+    { name: "Argentine", code: "+54", flag: "🇦🇷" },
+    { name: "Arménie", code: "+374", flag: "🇦🇲" },
+    { name: "Australie", code: "+61", flag: "🇦🇺" },
+    { name: "Autriche", code: "+43", flag: "🇦🇹" },
+    { name: "Azerbaïdjan", code: "+994", flag: "🇦🇿" },
+    { name: "Bahamas", code: "+1242", flag: "🇧🇸" },
+    { name: "Bahreïn", code: "+973", flag: "🇧🇭" },
+    { name: "Bangladesh", code: "+880", flag: "🇧🇩" },
+    { name: "Barbade", code: "+1246", flag: "🇧🇧" },
+    { name: "Belgique", code: "+32", flag: "🇧🇪" },
+    { name: "Belize", code: "+501", flag: "🇧🇿" },
+    { name: "Bénin", code: "+229", flag: "🇧🇯" },
+    { name: "Bhoutan", code: "+975", flag: "🇧🇹" },
+    { name: "Biélorussie", code: "+375", flag: "🇧🇾" },
+    { name: "Birmanie (Myanmar)", code: "+95", flag: "🇲🇲" },
+    { name: "Bolivie", code: "+591", flag: "🇧🇴" },
+    { name: "Bosnie-Herzégovine", code: "+387", flag: "🇧🇦" },
+    { name: "Botswana", code: "+267", flag: "🇧🇼" },
+    { name: "Brésil", code: "+55", flag: "🇧🇷" },
+    { name: "Brunei", code: "+673", flag: "🇧🇳" },
+    { name: "Bulgarie", code: "+359", flag: "🇧🇬" },
+    { name: "Burkina Faso", code: "+226", flag: "🇧🇫" },
+    { name: "Burundi", code: "+257", flag: "🇧🇮" },
+    { name: "Cambodge", code: "+855", flag: "🇰🇭" },
+    { name: "Cameroun", code: "+237", flag: "🇨🇲" },
+    { name: "Canada", code: "+1", flag: "🇨🇦" },
+    { name: "Cap-Vert", code: "+238", flag: "🇨🇻" },
+    { name: "Chili", code: "+56", flag: "🇨🇱" },
+    { name: "Chine", code: "+86", flag: "🇨🇳" },
+    { name: "Chypre", code: "+357", flag: "🇨🇾" },
+    { name: "Colombie", code: "+57", flag: "🇨🇴" },
+    { name: "Comores", code: "+269", flag: "🇰🇲" },
+    { name: "Congo (Brazzaville)", code: "+242", flag: "🇨🇬" },
+    { name: "Congo (Kinshasa)", code: "+243", flag: "🇨🇩" },
+    { name: "Corée du Nord", code: "+850", flag: "🇰🇵" },
+    { name: "Corée du Sud", code: "+82", flag: "🇰🇷" },
+    { name: "Costa Rica", code: "+506", flag: "🇨🇷" },
+    { name: "Côte d'Ivoire", code: "+225", flag: "🇨🇮" },
+    { name: "Croatie", code: "+385", flag: "🇭🇷" },
+    { name: "Cuba", code: "+53", flag: "🇨🇺" },
+    { name: "Danemark", code: "+45", flag: "🇩🇰" },
+    { name: "Djibouti", code: "+253", flag: "🇩🇯" },
+    { name: "Dominique", code: "+1767", flag: "🇩🇲" },
+    { name: "Égypte", code: "+20", flag: "🇪🇬" },
+    { name: "Émirats Arabes Unis", code: "+971", flag: "🇦🇪" },
+    { name: "Équateur", code: "+593", flag: "🇪🇨" },
+    { name: "Érythrée", code: "+291", flag: "🇪🇷" },
+    { name: "Espagne", code: "+34", flag: "🇪🇸" },
+    { name: "Estonie", code: "+372", flag: "🇪🇪" },
+    { name: "États-Unis", code: "+1", flag: "🇺🇸" },
+    { name: "Éthiopie", code: "+251", flag: "🇪🇹" },
+    { name: "Fidji", code: "+679", flag: "🇫🇯" },
+    { name: "Finlande", code: "+358", flag: "🇫🇮" },
+    { name: "France", code: "+33", flag: "🇫🇷" },
+    { name: "Gabon", code: "+241", flag: "🇬🇦" },
+    { name: "Gambie", code: "+220", flag: "🇬🇲" },
+    { name: "Géorgie", code: "+995", flag: "🇬🇪" },
+    { name: "Ghana", code: "+233", flag: "🇬🇭" },
+    { name: "Grèce", code: "+30", flag: "🇬🇷" },
+    { name: "Grenade", code: "+1473", flag: "🇬🇩" },
+    { name: "Guatemala", code: "+502", flag: "🇬🇹" },
+    { name: "Guinée", code: "+224", flag: "🇬🇳" },
+    { name: "Guinée équatoriale", code: "+240", flag: "🇬🇶" },
+    { name: "Guinée-Bissau", code: "+245", flag: "🇬🇼" },
+    { name: "Guyana", code: "+592", flag: "🇬🇾" },
+    { name: "Haïti", code: "+509", flag: "🇭🇹" },
+    { name: "Honduras", code: "+504", flag: "🇭🇳" },
+    { name: "Hong Kong", code: "+852", flag: "🇭🇰" },
+    { name: "Hongrie", code: "+36", flag: "🇭🇺" },
+    { name: "Îles Caïmans", code: "+1345", flag: "🇰🇾" },
+    { name: "Îles Marshall", code: "+692", flag: "🇲🇭" },
+    { name: "Îles Salomon", code: "+677", flag: "🇸🇧" },
+    { name: "Inde", code: "+91", flag: "🇮🇳" },
+    { name: "Indonésie", code: "+62", flag: "🇮🇩" },
+    { name: "Irak", code: "+964", flag: "🇮🇶" },
+    { name: "Iran", code: "+98", flag: "🇮🇷" },
+    { name: "Irlande", code: "+353", flag: "🇮🇪" },
+    { name: "Islande", code: "+354", flag: "🇮🇸" },
+    { name: "Israël", code: "+972", flag: "🇮🇱" },
+    { name: "Italie", code: "+39", flag: "🇮🇹" },
+    { name: "Jamaïque", code: "+1876", flag: "🇯🇲" },
+    { name: "Japon", code: "+81", flag: "🇯🇵" },
+    { name: "Jordanie", code: "+962", flag: "🇯🇴" },
+    { name: "Kazakhstan", code: "+7", flag: "🇰🇿" },
+    { name: "Kenya", code: "+254", flag: "🇰🇪" },
+    { name: "Kirghizistan", code: "+996", flag: "🇰🇬" },
+    { name: "Kiribati", code: "+686", flag: "🇰🇮" },
+    { name: "Koweït", code: "+965", flag: "🇰🇼" },
+    { name: "Laos", code: "+856", flag: "🇱🇦" },
+    { name: "Lesotho", code: "+266", flag: "🇱🇸" },
+    { name: "Lettonie", code: "+371", flag: "🇱🇻" },
+    { name: "Liban", code: "+961", flag: "🇱🇧" },
+    { name: "Liberia", code: "+231", flag: "🇱🇷" },
+    { name: "Libye", code: "+218", flag: "🇱🇾" },
+    { name: "Liechtenstein", code: "+423", flag: "🇱🇮" },
+    { name: "Lituanie", code: "+370", flag: "🇱🇹" },
+    { name: "Luxembourg", code: "+352", flag: "🇱🇺" },
+    { name: "Macao", code: "+853", flag: "🇲🇴" },
+    { name: "Macédoine du Nord", code: "+389", flag: "🇲🇰" },
+    { name: "Madagascar", code: "+261", flag: "🇲🇬" },
+    { name: "Malaisie", code: "+60", flag: "🇲🇾" },
+    { name: "Malawi", code: "+265", flag: "🇲🇼" },
+    { name: "Maldives", code: "+960", flag: "🇲🇻" },
+    { name: "Mali", code: "+223", flag: "🇲🇱" },
+    { name: "Malte", code: "+356", flag: "🇲🇹" },
+    { name: "Maroc", code: "+212", flag: "🇲🇦" },
+    { name: "Martinique", code: "+596", flag: "🇲🇶" },
+    { name: "Mauritanie", code: "+222", flag: "🇲🇷" },
+    { name: "Maurice", code: "+230", flag: "🇲🇺" },
+    { name: "Mexique", code: "+52", flag: "🇲🇽" },
+    { name: "Micronésie", code: "+691", flag: "🇫🇲" },
+    { name: "Moldavie", code: "+373", flag: "🇲🇩" },
+    { name: "Monaco", code: "+377", flag: "🇲🇨" },
+    { name: "Mongolie", code: "+976", flag: "🇲🇳" },
+    { name: "Monténégro", code: "+382", flag: "🇲🇪" },
+    { name: "Mozambique", code: "+258", flag: "🇲🇿" },
+    { name: "Namibie", code: "+264", flag: "🇳🇦" },
+    { name: "Nauru", code: "+674", flag: "🇳🇷" },
+    { name: "Népal", code: "+977", flag: "🇳🇵" },
+    { name: "Nicaragua", code: "+505", flag: "🇳🇮" },
+    { name: "Niger", code: "+227", flag: "🇳🇪" },
+    { name: "Nigeria", code: "+234", flag: "🇳🇬" },
+    { name: "Norvège", code: "+47", flag: "🇳🇴" },
+    { name: "Nouvelle-Zélande", code: "+64", flag: "🇳🇿" },
+    { name: "Oman", code: "+968", flag: "🇴🇲" },
+    { name: "Ouganda", code: "+256", flag: "🇺🇬" },
+    { name: "Ouzbékistan", code: "+998", flag: "🇺🇿" },
+    { name: "Pakistan", code: "+92", flag: "🇵🇰" },
+    { name: "Palaos", code: "+680", flag: "🇵🇼" },
+    { name: "Palestine", code: "+970", flag: "🇵🇸" },
+    { name: "Panama", code: "+507", flag: "🇵🇦" },
+    { name: "Papouasie-Nouvelle-Guinée", code: "+675", flag: "🇵🇬" },
+    { name: "Paraguay", code: "+595", flag: "🇵🇾" },
+    { name: "Pays-Bas", code: "+31", flag: "🇳🇱" },
+    { name: "Pérou", code: "+51", flag: "🇵🇪" },
+    { name: "Philippines", code: "+63", flag: "🇵🇭" },
+    { name: "Pologne", code: "+48", flag: "🇵🇱" },
+    { name: "Portugal", code: "+351", flag: "🇵🇹" },
+    { name: "Qatar", code: "+974", flag: "🇶🇦" },
+    { name: "Roumanie", code: "+40", flag: "🇷🇴" },
+    { name: "Royaume-Uni", code: "+44", flag: "🇬🇧" },
+    { name: "Russie", code: "+7", flag: "🇷🇺" },
+    { name: "Rwanda", code: "+250", flag: "🇷🇼" },
+    { name: "Saint-Kitts-et-Nevis", code: "+1869", flag: "🇰🇳" },
+    { name: "Saint-Marin", code: "+378", flag: "🇸🇲" },
+    { name: "Saint-Vincent-et-les-Grenadines", code: "+1784", flag: "🇻🇨" },
+    { name: "Sainte-Lucie", code: "+1758", flag: "🇱🇨" },
+    { name: "Samoa", code: "+685", flag: "🇼🇸" },
+    { name: "Sao Tomé-et-Principe", code: "+239", flag: "🇸🇹" },
+    { name: "Sénégal", code: "+221", flag: "🇸🇳" },
+    { name: "Serbie", code: "+381", flag: "🇷🇸" },
+    { name: "Seychelles", code: "+248", flag: "🇸🇨" },
+    { name: "Sierra Leone", code: "+232", flag: "🇸🇱" },
+    { name: "Singapour", code: "+65", flag: "🇸🇬" },
+    { name: "Slovaquie", code: "+421", flag: "🇸🇰" },
+    { name: "Slovénie", code: "+386", flag: "🇸🇮" },
+    { name: "Somalie", code: "+252", flag: "🇸🇴" },
+    { name: "Soudan", code: "+249", flag: "🇸🇩" },
+    { name: "Soudan du Sud", code: "+211", flag: "🇸🇸" },
+    { name: "Sri Lanka", code: "+94", flag: "🇱🇰" },
+    { name: "Suède", code: "+46", flag: "🇸🇪" },
+    { name: "Suisse", code: "+41", flag: "🇨🇭" },
+    { name: "Suriname", code: "+597", flag: "🇸🇷" },
+    { name: "Syrie", code: "+963", flag: "🇸🇾" },
+    { name: "Tadjikistan", code: "+992", flag: "🇹🇯" },
+    { name: "Taïwan", code: "+886", flag: "🇹🇼" },
+    { name: "Tanzanie", code: "+255", flag: "🇹🇿" },
+    { name: "Tchad", code: "+235", flag: "🇹🇩" },
+    { name: "Thaïlande", code: "+66", flag: "🇹🇭" },
+    { name: "Timor oriental", code: "+670", flag: "🇹🇱" },
+    { name: "Tokelau", code: "+690", flag: "🇹🇰" },
+    { name: "Tonga", code: "+676", flag: "🇹🇴" },
+    { name: "Trinité-et-Tobago", code: "+1868", flag: "🇹🇹" },
+    { name: "Tunisie", code: "+216", flag: "🇹🇳" },
+    { name: "Turkménistan", code: "+993", flag: "🇹🇲" },
+    { name: "Turquie", code: "+90", flag: "🇹🇷" },
+    { name: "Tuvalu", code: "+688", flag: "🇹🇻" },
+    { name: "Ukraine", code: "+380", flag: "🇺🇦" },
+    { name: "Uruguay", code: "+598", flag: "🇺🇾" },
+    { name: "Vanuatu", code: "+678", flag: "🇻🇺" },
+    { name: "Vatican", code: "+379", flag: "🇻🇦" },
+    { name: "Venezuela", code: "+58", flag: "🇻🇪" },
+    { name: "Viêt Nam", code: "+84", flag: "🇻🇳" },
+    { name: "Yémen", code: "+967", flag: "🇾🇪" },
+    { name: "Zambie", code: "+260", flag: "🇿🇲" },
+    { name: "Zimbabwe", code: "+263", flag: "🇿🇼" }
+];
+
+let selectedGender = 'male';
+let filteredCountries = [...ALL_COUNTRIES];
+
+// ============================
+// INIT
+// ============================
+document.addEventListener('DOMContentLoaded', () => {
+    populateCountries(ALL_COUNTRIES);
+    checkRemembered();
+    checkTabFromURL();
+});
+
+function checkTabFromURL() {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('tab') === 'register') switchTab('register');
+}
+
+function checkRemembered() {
+    const rem = localStorage.getItem('lh_remembered_email');
+    if (rem) {
+        document.getElementById('loginEmail').value = rem;
+        document.getElementById('rememberMe').checked = true;
+    }
+}
+
+// ============================
+// TABS
+// ============================
+function switchTab(tab) {
+    document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+    document.querySelectorAll('.auth-tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(tab + 'Form').classList.add('active');
+    document.getElementById('tab' + tab.charAt(0).toUpperCase() + tab.slice(1) + 'Btn').classList.add('active');
+}
+
+// ============================
+// COUNTRIES
+// ============================
+function populateCountries(list) {
+    const sel = document.getElementById('registerCountry');
+    sel.innerHTML = list.map(c =>
+        `<option value="${c.code}" data-name="${c.name}" ${c.name === 'Togo' ? 'selected' : ''}>
+            ${c.flag} ${c.name} (${c.code})
+        </option>`
+    ).join('');
+    updatePhoneCode();
+}
+
+function filterCountries(query) {
+    const q = query.toLowerCase().trim();
+    const filtered = q ? ALL_COUNTRIES.filter(c =>
+        c.name.toLowerCase().includes(q) || c.code.includes(q)
+    ) : ALL_COUNTRIES;
+    populateCountries(filtered);
+}
+
+function updatePhoneCode() {
+    const sel = document.getElementById('registerCountry');
+    const val = sel.value;
+    document.getElementById('phoneCodeDisplay').textContent = val || '+228';
+}
+
+// ============================
+// GENDER
+// ============================
+function selectGender(val) {
+    selectedGender = val;
+    document.querySelectorAll('.gender-btn').forEach(b => {
+        b.classList.toggle('selected', b.dataset.value === val);
+    });
+}
+
+// ============================
+// PASSWORD
+// ============================
+function togglePwd(inputId, icon) {
+    const inp = document.getElementById(inputId);
+    if (inp.type === 'password') {
+        inp.type = 'text';
+        icon.classList.replace('fa-eye', 'fa-eye-slash');
+    } else {
+        inp.type = 'password';
+        icon.classList.replace('fa-eye-slash', 'fa-eye');
+    }
+}
+
+function checkStrength(val) {
+    const el = document.getElementById('pwdStrength');
+    const fill = document.getElementById('strengthFill');
+    const text = document.getElementById('strengthText');
+    if (!val) { el.classList.remove('visible'); return; }
+    el.classList.add('visible');
+    let score = 0;
+    if (val.length >= 8) score++;
+    if (/[A-Z]/.test(val)) score++;
+    if (/[0-9]/.test(val)) score++;
+    if (/[^A-Za-z0-9]/.test(val)) score++;
+    const levels = [
+        { w: '25%', color: '#e74c3c', label: 'Très faible' },
+        { w: '50%', color: '#e67e22', label: 'Faible' },
+        { w: '75%', color: '#f1c40f', label: 'Moyen' },
+        { w: '100%', color: '#2ecc71', label: 'Fort' }
+    ];
+    const lvl = levels[score - 1] || levels[0];
+    fill.style.width = lvl.w;
+    fill.style.background = lvl.color;
+    text.textContent = lvl.label;
+    text.style.color = lvl.color;
+}
+
+// ============================
+// ALERT
+// ============================
+function showAlert(id, msg, type) {
+    const el = document.getElementById(id);
+    el.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i> ${msg}`;
+    el.className = `form-alert show ${type}`;
+    if (type === 'success') setTimeout(() => el.className = 'form-alert', 4000);
+}
+
+function hideAlert(id) {
+    document.getElementById(id).className = 'form-alert';
+}
+
+// ============================
+// TOAST
+// ============================
+function showToast(msg, type = 'default') {
+    const c = document.getElementById('toastContainer');
+    const t = document.createElement('div');
+    t.className = `toast-item ${type}`;
+    const icon = type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle';
+    t.innerHTML = `<i class="fas fa-${icon}"></i> ${msg}`;
+    c.appendChild(t);
+    setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 300); }, 3500);
+}
+
+// ============================
+// LOADING STATE
+// ============================
+function setLoading(btn, state) {
+    btn.classList.toggle('loading', state);
+    btn.disabled = state;
+}
+
+// ============================
+// LOGIN
+// ============================
+function doLogin() {
+    const email = document.getElementById('loginEmail').value.trim();
+    const password = document.getElementById('loginPassword').value;
+    const btn = document.querySelector('#loginForm .btn-submit');
+
+    hideAlert('loginAlert');
+
+    if (!email || !password) {
+        showAlert('loginAlert', 'Veuillez remplir tous les champs.', 'error');
+        return;
+    }
+
+    if (!isValidEmail(email)) {
+        showAlert('loginAlert', 'Adresse e-mail invalide.', 'error');
+        return;
+    }
+
+    setLoading(btn, true);
+
+    // Comptes démo
+    const demo = [
+        { email: 'admin@luxehotel.com', password: 'Admin@2026', name: 'Administrateur', role: 'admin' },
+        { email: 'client@luxehotel.com', password: 'Client123', name: 'Client Demo', role: 'client' }
+    ];
+
+    const stored = JSON.parse(localStorage.getItem('lh_users') || '[]');
+    const all = [...demo, ...stored];
+    const user = all.find(u => u.email.toLowerCase() === email.toLowerCase() && u.password === password);
+
+    setTimeout(() => {
+        setLoading(btn, false);
+        if (user) {
+            if (document.getElementById('rememberMe').checked) {
+                localStorage.setItem('lh_remembered_email', email);
+            } else {
+                localStorage.removeItem('lh_remembered_email');
+            }
+
+            const session = {
+                id: user.id || 0,
+                email: user.email,
+                name: user.name,
+                role: user.role || 'client',
+                country: user.country || '',
+                phone: user.phone || '',
+                sex: user.sex || '',
+                profilePhoto: user.profilePhoto || null
+            };
+
+            localStorage.setItem('lh_session', JSON.stringify(session));
+            localStorage.setItem('currentUser', JSON.stringify(session));
+            localStorage.setItem('currentClient', JSON.stringify(session));
+
+            if (user.role === 'admin') {
+                localStorage.setItem('currentAdmin', JSON.stringify(session));
+                localStorage.removeItem('currentClient');
+            }
+
+            showAlert('loginAlert', 'Connexion réussie ! Redirection en cours...', 'success');
+            showToast('Bienvenue, ' + user.name + ' !', 'success');
+
+            setTimeout(() => {
+                if (user.role === 'admin') {
+                    window.location.href = 'admin.html';
+                } else {
+                    window.location.href = 'index.html';
+                }
+            }, 1200);
+        } else {
+            showAlert('loginAlert', 'E-mail ou mot de passe incorrect.', 'error');
+            document.getElementById('loginPassword').value = '';
+        }
+    }, 800);
+}
+
+// ============================
+// REGISTER
+// ============================
+function doRegister() {
+    const firstName = document.getElementById('regFirstName').value.trim();
+    const lastName = document.getElementById('regLastName').value.trim();
+    const email = document.getElementById('regEmail').value.trim();
+    const countryCode = document.getElementById('registerCountry').value;
+    const countryName = document.querySelector('#registerCountry option:checked')?.dataset?.name || '';
+    const phone = document.getElementById('regPhone').value.trim();
+    const password = document.getElementById('regPassword').value;
+    const confirm = document.getElementById('regConfirmPassword').value;
+    const terms = document.getElementById('agreeTerms').checked;
+    const btn = document.querySelector('#registerForm .btn-submit');
+
+    hideAlert('registerAlert');
+
+    // Validation
+    if (!firstName || !lastName) {
+        showAlert('registerAlert', 'Veuillez entrer votre prénom et nom.', 'error'); return;
+    }
+    if (!isValidEmail(email)) {
+        showAlert('registerAlert', 'Adresse e-mail invalide.', 'error'); return;
+    }
+    if (email.toLowerCase() === 'admin@luxehotel.com') {
+        showAlert('registerAlert', 'Ce compte ne peut pas être créé via l\'inscription.', 'error'); return;
+    }
+    if (!countryCode) {
+        showAlert('registerAlert', 'Veuillez sélectionner votre pays.', 'error'); return;
+    }
+    if (!phone || phone.length < 5) {
+        showAlert('registerAlert', 'Numéro de téléphone invalide.', 'error'); return;
+    }
+    if (password.length < 6) {
+        showAlert('registerAlert', 'Le mot de passe doit contenir au moins 6 caractères.', 'error'); return;
+    }
+    if (password !== confirm) {
+        showAlert('registerAlert', 'Les mots de passe ne correspondent pas.', 'error'); return;
+    }
+    if (!terms) {
+        showAlert('registerAlert', 'Vous devez accepter les conditions d\'utilisation.', 'error'); return;
+    }
+
+    setLoading(btn, true);
+
+    const users = JSON.parse(localStorage.getItem('lh_users') || '[]');
+    if (users.find(u => u.email.toLowerCase() === email.toLowerCase())) {
+        setLoading(btn, false);
+        showAlert('registerAlert', 'Cette adresse e-mail est déjà utilisée.', 'error'); return;
+    }
+
+    setTimeout(() => {
+        const newUser = {
+            id: Date.now(),
+            name: firstName + ' ' + lastName,
+            firstName,
+            lastName,
+            email,
+            country: countryName,
+            countryCode,
+            phone: countryCode + phone,
+            sex: selectedGender,
+            password,
+            role: 'client',
+            profilePhoto: null,
+            registrationDate: new Date().toISOString()
+        };
+
+        users.push(newUser);
+        localStorage.setItem('lh_users', JSON.stringify(users));
+
+        // Notif admin
+        const notifs = JSON.parse(localStorage.getItem('admin_notifications') || '[]');
+        notifs.push({
+            title: 'Nouvel utilisateur inscrit',
+            message: `${newUser.name} (${email}) s'est inscrit`,
+            icon: 'user-check',
+            timestamp: new Date().toISOString(),
+            type: 'new-user',
+            read: false
+        });
+        localStorage.setItem('admin_notifications', JSON.stringify(notifs));
+
+        // Compatibilité ancien code
+        const clientUsers = JSON.parse(localStorage.getItem('clientUsers') || '[]');
+        clientUsers.push(newUser);
+        localStorage.setItem('clientUsers', JSON.stringify(clientUsers));
+
+        // Session
+        const session = { id: newUser.id, email, name: newUser.name, role: 'client',
+            country: countryName, phone: newUser.phone, sex: selectedGender, profilePhoto: null };
+        localStorage.setItem('lh_session', JSON.stringify(session));
+        localStorage.setItem('currentUser', JSON.stringify(session));
+        localStorage.setItem('currentClient', JSON.stringify(session));
+
+        setLoading(btn, false);
+        showAlert('registerAlert', 'Compte créé avec succès ! Redirection...', 'success');
+        showToast('Bienvenue, ' + firstName + ' !', 'success');
+
+        setTimeout(() => { window.location.href = 'index.html'; }, 1400);
+    }, 900);
+}
+
+// ============================
+// HELPERS
+// ============================
+function isValidEmail(e) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
+}
+
+function showForgotPwd(e) {
+    e.preventDefault();
+    const email = document.getElementById('loginEmail').value.trim();
+    if (!email || !isValidEmail(email)) {
+        showAlert('loginAlert', 'Entrez votre e-mail ci-dessus pour réinitialiser votre mot de passe.', 'error');
+        return;
+    }
+    showAlert('loginAlert', 'Si ce compte existe, un email de réinitialisation vous sera envoyé. (Fonctionnalité à connecter côté serveur)', 'success');
+}
+
+// Enter key support
+document.addEventListener('keydown', e => {
+    if (e.key !== 'Enter') return;
+    if (document.getElementById('loginForm').classList.contains('active')) doLogin();
+    else doRegister();
+});
+</script>
+</body>
+</html>
