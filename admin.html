@@ -562,9 +562,339 @@ textarea.form-control { resize:vertical; min-height:90px; }
     .stats-row { grid-template-columns:1fr; }
     .page-header { flex-direction:column; align-items:flex-start; }
 }
+
+/* ============================================================
+   ADMIN AUTH GATE — Écran de connexion intégré
+   ============================================================ */
+
+/* L'app entière est masquée jusqu'à l'authentification */
+#adminApp { display: none; }
+
+/* Overlay plein écran */
+#adminGate {
+    position: fixed; inset: 0; z-index: 9999;
+    background: var(--primary);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'DM Sans', sans-serif;
+    overflow: hidden;
+}
+
+/* Décoration d'arrière-plan */
+#adminGate::before {
+    content: '';
+    position: absolute; inset: 0;
+    background:
+        radial-gradient(ellipse 90% 70% at 10% 90%, rgba(201,168,76,0.12) 0%, transparent 55%),
+        radial-gradient(ellipse 70% 90% at 90% 10%, rgba(233,69,96,0.08) 0%, transparent 50%);
+    pointer-events: none;
+}
+
+#adminGate::after {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 700px; height: 700px;
+    border-radius: 50%;
+    border: 1px solid rgba(201,168,76,0.08);
+    pointer-events: none;
+}
+
+.gate-box {
+    position: relative; z-index: 2;
+    width: 100%; max-width: 440px;
+    padding: 1rem;
+    animation: gateIn 0.5s cubic-bezier(0.4,0,0.2,1) both;
+}
+
+@keyframes gateIn {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Brand */
+.gate-brand {
+    display: flex; align-items: center; gap: 0.75rem;
+    margin-bottom: 2.5rem; justify-content: center;
+    text-decoration: none;
+}
+
+.gate-brand-icon {
+    width: 48px; height: 48px;
+    background: var(--gold); border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--primary); font-size: 1.2rem;
+}
+
+.gate-brand-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.8rem; font-weight: 600;
+    color: white;
+}
+
+.gate-brand-sub {
+    font-size: 0.72rem; color: rgba(255,255,255,0.35);
+    text-transform: uppercase; letter-spacing: 0.14em;
+}
+
+/* Card */
+.gate-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.1);
+    backdrop-filter: blur(20px);
+    border-radius: 20px;
+    padding: 2.5rem;
+}
+
+.gate-card h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.6rem; font-weight: 600;
+    color: white; margin-bottom: 0.3rem;
+}
+
+.gate-card p {
+    font-size: 0.875rem;
+    color: rgba(255,255,255,0.45);
+    margin-bottom: 2rem;
+    line-height: 1.5;
+}
+
+/* Shield icon */
+.gate-shield {
+    width: 56px; height: 56px;
+    background: rgba(201,168,76,0.15);
+    border: 1px solid rgba(201,168,76,0.25);
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem; color: var(--gold);
+    margin-bottom: 1.5rem;
+}
+
+/* Label */
+.gate-label {
+    display: block;
+    font-size: 0.72rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.1em;
+    color: rgba(255,255,255,0.4);
+    margin-bottom: 0.5rem;
+}
+
+/* Input wrapper */
+.gate-input-wrap {
+    position: relative; margin-bottom: 1.25rem;
+}
+
+.gate-input {
+    width: 100%;
+    padding: 0.9rem 3rem 0.9rem 1rem;
+    background: rgba(255,255,255,0.06);
+    border: 1.5px solid rgba(255,255,255,0.12);
+    border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem; color: white;
+    outline: none;
+    transition: all 0.25s ease;
+    letter-spacing: 0.08em;
+}
+
+.gate-input:focus {
+    border-color: rgba(201,168,76,0.6);
+    background: rgba(255,255,255,0.09);
+    box-shadow: 0 0 0 3px rgba(201,168,76,0.1);
+}
+
+.gate-input::placeholder { color: rgba(255,255,255,0.2); letter-spacing: 0; }
+
+.gate-eye {
+    position: absolute; right: 1rem; top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer; color: rgba(255,255,255,0.35);
+    font-size: 0.9rem; transition: color 0.2s;
+    background: none; border: none;
+}
+
+.gate-eye:hover { color: rgba(255,255,255,0.7); }
+
+/* Submit */
+.gate-btn {
+    width: 100%; padding: 0.95rem;
+    background: var(--gold);
+    color: var(--primary);
+    border: none; border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem; font-weight: 700;
+    cursor: pointer; transition: all 0.25s ease;
+    display: flex; align-items: center; justify-content: center;
+    gap: 0.5rem; margin-bottom: 1rem;
+    letter-spacing: 0.02em;
+}
+
+.gate-btn:hover {
+    background: var(--gold-light);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 24px rgba(201,168,76,0.3);
+}
+
+.gate-btn:active { transform: translateY(0); }
+
+.gate-btn:disabled {
+    opacity: 0.6; cursor: not-allowed; transform: none;
+}
+
+/* Error message */
+.gate-error {
+    display: none;
+    background: rgba(239,68,68,0.15);
+    border: 1px solid rgba(239,68,68,0.3);
+    color: #fca5a5;
+    padding: 0.75rem 1rem; border-radius: 8px;
+    font-size: 0.85rem; margin-bottom: 1rem;
+    align-items: center; gap: 0.5rem;
+}
+
+.gate-error.show { display: flex; }
+
+/* Attempts warning */
+.gate-attempts {
+    text-align: center;
+    font-size: 0.78rem;
+    color: rgba(255,255,255,0.3);
+    margin-top: 0.5rem;
+}
+
+/* Spinner */
+.gate-spinner {
+    display: none;
+    width: 16px; height: 16px;
+    border: 2px solid rgba(26,26,46,0.3);
+    border-top-color: var(--primary);
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Back link */
+.gate-back {
+    display: flex; align-items: center; justify-content: center;
+    gap: 0.5rem;
+    color: rgba(255,255,255,0.35); font-size: 0.82rem;
+    text-decoration: none; margin-top: 1.5rem;
+    transition: color 0.2s;
+}
+
+.gate-back:hover { color: rgba(255,255,255,0.65); }
+
+/* Locked state */
+.gate-locked {
+    text-align: center; padding: 1.5rem 0;
+}
+
+.gate-locked i {
+    font-size: 2.5rem; color: var(--danger);
+    margin-bottom: 1rem; display: block;
+}
+
+.gate-locked p { color: rgba(255,255,255,0.55); font-size: 0.875rem; line-height: 1.6; }
+
+.gate-countdown {
+    font-size: 2rem; font-weight: 800;
+    color: var(--gold); margin: 0.75rem 0;
+}
+
+/* Shake animation on wrong password */
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20%       { transform: translateX(-8px); }
+    40%       { transform: translateX(8px); }
+    60%       { transform: translateX(-5px); }
+    80%       { transform: translateX(5px); }
+}
+
+.gate-card.shake { animation: shake 0.45s ease; }
+
+/* Success flash */
+@keyframes successFlash {
+    0%   { border-color: rgba(255,255,255,0.12); }
+    50%  { border-color: rgba(16,185,129,0.6); box-shadow: 0 0 0 3px rgba(16,185,129,0.15); }
+    100% { border-color: rgba(255,255,255,0.12); }
+}
+
+.gate-input.success { animation: successFlash 0.5s ease; }
     </style>
 </head>
 <body>
+
+<!-- ============================================================
+     ADMIN AUTH GATE — Écran de connexion exclusif
+     ============================================================ -->
+<div id="adminGate">
+    <div class="gate-box">
+
+        <!-- Brand -->
+        <div class="gate-brand">
+            <div class="gate-brand-icon"><i class="fas fa-hotel"></i></div>
+            <div>
+                <div class="gate-brand-name">LuxeHôtel</div>
+                <div class="gate-brand-sub">Panneau Administration</div>
+            </div>
+        </div>
+
+        <!-- Auth card -->
+        <div class="gate-card" id="gateCard">
+
+            <div class="gate-shield"><i class="fas fa-shield-halved"></i></div>
+
+            <h2>Accès restreint</h2>
+            <p>Cette zone est réservée au personnel administrateur autorisé.<br>Veuillez saisir votre mot de passe pour continuer.</p>
+
+            <!-- Error message -->
+            <div class="gate-error" id="gateError">
+                <i class="fas fa-exclamation-circle"></i>
+                <span id="gateErrorMsg">Mot de passe incorrect.</span>
+            </div>
+
+            <!-- Password field -->
+            <label class="gate-label" for="gatePwd">Mot de passe administrateur</label>
+            <div class="gate-input-wrap">
+                <input
+                    type="password"
+                    id="gatePwd"
+                    class="gate-input"
+                    placeholder="••••••••••••"
+                    autocomplete="current-password"
+                    maxlength="64"
+                    onkeydown="if(event.key==='Enter') doAdminLogin()">
+                <button class="gate-eye" id="gateEyeBtn" onclick="toggleGatePwd()" tabindex="-1" type="button">
+                    <i class="fas fa-eye" id="gateEyeIcon"></i>
+                </button>
+            </div>
+
+            <!-- Submit -->
+            <button class="gate-btn" id="gateSubmitBtn" onclick="doAdminLogin()">
+                <div class="gate-spinner" id="gateSpinner"></div>
+                <i class="fas fa-unlock-keyhole" id="gateSubmitIcon"></i>
+                <span id="gateSubmitText">Accéder au panneau</span>
+            </button>
+
+            <!-- Attempts counter -->
+            <div class="gate-attempts" id="gateAttempts"></div>
+
+        </div>
+
+        <!-- Back to site -->
+        <a href="index.html" class="gate-back">
+            <i class="fas fa-arrow-left"></i>
+            Retour au site principal
+        </a>
+
+    </div>
+</div>
+
+<!-- ============================================================
+     APPLICATION ADMIN (masquée jusqu'à auth réussie)
+     ============================================================ -->
+<div id="adminApp">
 
 <!-- Toast zone -->
 <div class="toast-zone" id="toastZone"></div>
@@ -1201,7 +1531,211 @@ textarea.form-control { resize:vertical; min-height:90px; }
     </div>
 </div>
 
+</div><!-- /adminApp -->
+
 <script>
+// ============================================================
+// ADMIN AUTH GATE — Logique intégrée
+// ============================================================
+
+const ADMIN_PASSWORD_HASH = 'Admin@2026'; // Mot de passe admin
+const MAX_ATTEMPTS = 5;           // Tentatives max avant blocage
+const LOCK_DURATION = 30;         // Secondes de blocage
+
+let gateAttempts = 0;
+let gateLocked = false;
+let lockTimer = null;
+
+// --- Vérification auth au chargement ---
+(function checkAdminAuth() {
+    const session = localStorage.getItem('lh_admin_session');
+    if (session) {
+        try {
+            const s = JSON.parse(session);
+            // Session valide 8h
+            if (s.token && Date.now() - s.createdAt < 8 * 60 * 60 * 1000) {
+                showAdminApp();
+                return;
+            }
+        } catch(e) {}
+        localStorage.removeItem('lh_admin_session');
+    }
+    // Rester sur la gate
+    document.getElementById('gatePwd').focus();
+})();
+
+function doAdminLogin() {
+    if (gateLocked) return;
+
+    const pwd = document.getElementById('gatePwd').value;
+    if (!pwd) {
+        shakeCard();
+        showGateError('Veuillez saisir le mot de passe.');
+        return;
+    }
+
+    // Loading state
+    const btn = document.getElementById('gateSubmitBtn');
+    const spinner = document.getElementById('gateSpinner');
+    const icon = document.getElementById('gateSubmitIcon');
+    const txt = document.getElementById('gateSubmitText');
+    btn.disabled = true;
+    spinner.style.display = 'block';
+    icon.style.display = 'none';
+    txt.textContent = 'Vérification...';
+
+    setTimeout(() => {
+        if (pwd === ADMIN_PASSWORD_HASH) {
+            // Succès
+            document.getElementById('gatePwd').classList.add('success');
+            hideGateError();
+            icon.style.display = 'inline';
+            icon.className = 'fas fa-check';
+            txt.textContent = 'Accès autorisé !';
+            btn.style.background = '#10b981';
+
+            // Créer session admin
+            const session = {
+                token: btoa('admin_' + Date.now() + '_' + Math.random()),
+                createdAt: Date.now(),
+                email: 'admin@luxehotel.com'
+            };
+            localStorage.setItem('lh_admin_session', JSON.stringify(session));
+            localStorage.setItem('currentAdmin', JSON.stringify({ email: 'admin@luxehotel.com', name: 'Administrateur' }));
+
+            gateAttempts = 0;
+
+            setTimeout(() => showAdminApp(), 700);
+        } else {
+            // Échec
+            gateAttempts++;
+            btn.disabled = false;
+            spinner.style.display = 'none';
+            icon.style.display = 'inline';
+            icon.className = 'fas fa-unlock-keyhole';
+            txt.textContent = 'Accéder au panneau';
+            document.getElementById('gatePwd').value = '';
+            shakeCard();
+
+            const remaining = MAX_ATTEMPTS - gateAttempts;
+
+            if (gateAttempts >= MAX_ATTEMPTS) {
+                startLockout();
+            } else {
+                showGateError(`Mot de passe incorrect. ${remaining} tentative${remaining > 1 ? 's' : ''} restante${remaining > 1 ? 's' : ''}.`);
+                updateAttemptsDisplay(remaining);
+            }
+        }
+    }, 600);
+}
+
+function showAdminApp() {
+    document.getElementById('adminGate').style.opacity = '0';
+    document.getElementById('adminGate').style.transition = 'opacity 0.4s ease';
+    setTimeout(() => {
+        document.getElementById('adminGate').style.display = 'none';
+        document.getElementById('adminApp').style.display = 'block';
+        // Init l'app
+        initAdminApp();
+    }, 400);
+}
+
+function initAdminApp() {
+    setTopbarDate();
+    loadData();
+    goPage('dashboard');
+    startNotificationPolling();
+}
+
+function startLockout() {
+    gateLocked = true;
+    let remaining = LOCK_DURATION;
+    const btn = document.getElementById('gateSubmitBtn');
+    btn.disabled = true;
+
+    // Remplacer le contenu de la card par le message de blocage
+    const card = document.getElementById('gateCard');
+    card.innerHTML = `
+    <div class="gate-locked">
+        <i class="fas fa-lock"></i>
+        <h2 style="color:white;font-family:'Cormorant Garamond',serif;margin-bottom:0.5rem;">Accès temporairement bloqué</h2>
+        <p>Trop de tentatives échouées. Veuillez patienter avant de réessayer.</p>
+        <div class="gate-countdown" id="lockCountdown">${remaining}s</div>
+        <p style="font-size:0.78rem;">Si vous avez oublié le mot de passe, contactez le support technique.</p>
+    </div>`;
+
+    lockTimer = setInterval(() => {
+        remaining--;
+        const el = document.getElementById('lockCountdown');
+        if (el) el.textContent = remaining + 's';
+        if (remaining <= 0) {
+            clearInterval(lockTimer);
+            gateLocked = false;
+            gateAttempts = 0;
+            // Restaurer le formulaire
+            card.innerHTML = `
+            <div class="gate-shield"><i class="fas fa-shield-halved"></i></div>
+            <h2>Accès restreint</h2>
+            <p>Veuillez saisir votre mot de passe pour continuer.</p>
+            <div class="gate-error" id="gateError"><i class="fas fa-exclamation-circle"></i><span id="gateErrorMsg"></span></div>
+            <label class="gate-label" for="gatePwd">Mot de passe administrateur</label>
+            <div class="gate-input-wrap">
+                <input type="password" id="gatePwd" class="gate-input" placeholder="••••••••••••"
+                    autocomplete="current-password" maxlength="64"
+                    onkeydown="if(event.key==='Enter') doAdminLogin()">
+                <button class="gate-eye" onclick="toggleGatePwd()" tabindex="-1" type="button">
+                    <i class="fas fa-eye" id="gateEyeIcon"></i>
+                </button>
+            </div>
+            <button class="gate-btn" id="gateSubmitBtn" onclick="doAdminLogin()">
+                <div class="gate-spinner" id="gateSpinner" style="display:none;"></div>
+                <i class="fas fa-unlock-keyhole" id="gateSubmitIcon"></i>
+                <span id="gateSubmitText">Accéder au panneau</span>
+            </button>
+            <div class="gate-attempts" id="gateAttempts"></div>`;
+            document.getElementById('gatePwd').focus();
+        }
+    }, 1000);
+}
+
+function showGateError(msg) {
+    const el = document.getElementById('gateError');
+    const msgEl = document.getElementById('gateErrorMsg');
+    if (el && msgEl) { msgEl.textContent = msg; el.classList.add('show'); }
+}
+
+function hideGateError() {
+    const el = document.getElementById('gateError');
+    if (el) el.classList.remove('show');
+}
+
+function updateAttemptsDisplay(remaining) {
+    const el = document.getElementById('gateAttempts');
+    if (el) {
+        el.innerHTML = `<span style="color:rgba(239,68,68,0.7);">⚠ ${remaining} tentative${remaining>1?'s':''} avant blocage</span>`;
+    }
+}
+
+function shakeCard() {
+    const card = document.getElementById('gateCard');
+    if (!card) return;
+    card.classList.add('shake');
+    setTimeout(() => card.classList.remove('shake'), 500);
+}
+
+function toggleGatePwd() {
+    const inp = document.getElementById('gatePwd');
+    const icon = document.getElementById('gateEyeIcon');
+    if (!inp) return;
+    if (inp.type === 'password') {
+        inp.type = 'text';
+        if (icon) { icon.classList.remove('fa-eye'); icon.classList.add('fa-eye-slash'); }
+    } else {
+        inp.type = 'password';
+        if (icon) { icon.classList.remove('fa-eye-slash'); icon.classList.add('fa-eye'); }
+    }
+}
+
 // ============================================================
 // STATE
 // ============================================================
@@ -1220,20 +1754,12 @@ const CURRENCY = '€';
 // ============================================================
 // INIT
 // ============================================================
-document.addEventListener('DOMContentLoaded', () => {
-    // Auth check
-    const admin = localStorage.getItem('currentAdmin');
-    if (!admin) {
-        window.location.href = 'login.html';
-        return;
-    }
-
-    setTopbarDate();
-    loadData();
-    goPage('dashboard');
-    startNotificationPolling();
-    console.log('🏨 Admin panel initialisé');
-});
+// initAdminApp() est appelée par showAdminApp() après auth réussie
+// Elle remplace l'ancien DOMContentLoaded
+function initAdminApp_placeholder() {
+    // Cette fonction n'est plus utilisée directement.
+    // L'initialisation se fait via initAdminApp() après validation du mot de passe.
+}
 
 function setTopbarDate() {
     const now = new Date();
@@ -1343,6 +1869,11 @@ function updateBadges() {
 // ============================================================
 let revenueChart = null;
 let roomTypeChart = null;
+
+function destroyCharts() {
+    if (revenueChart) { revenueChart.destroy(); revenueChart = null; }
+    if (roomTypeChart) { roomTypeChart.destroy(); roomTypeChart = null; }
+}
 
 function renderDashboard() {
     const active = reservations.filter(r => r.status !== 'cancelled');
@@ -2128,8 +2659,36 @@ function globalSearchFn(q) {
 // LOGOUT
 // ============================================================
 function doLogout() {
+    // Supprimer la session admin
+    localStorage.removeItem('lh_admin_session');
     localStorage.removeItem('currentAdmin');
-    window.location.href = 'login.html';
+
+    // Cacher l'app et réafficher la gate
+    const app = document.getElementById('adminApp');
+    const gate = document.getElementById('adminGate');
+    if (app) app.style.display = 'none';
+    if (gate) {
+        gate.style.display = 'flex';
+        gate.style.opacity = '0';
+        requestAnimationFrame(() => {
+            gate.style.transition = 'opacity 0.4s ease';
+            gate.style.opacity = '1';
+        });
+    }
+
+    // Réinitialiser le formulaire
+    const pwd = document.getElementById('gatePwd');
+    const btn = document.getElementById('gateSubmitBtn');
+    const err = document.getElementById('gateError');
+    const att = document.getElementById('gateAttempts');
+    if (pwd) { pwd.value = ''; pwd.focus(); }
+    if (btn) btn.disabled = false;
+    if (err) err.classList.remove('show');
+    if (att) att.innerHTML = '';
+    gateAttempts = 0;
+    gateLocked = false;
+    if (lockTimer) { clearInterval(lockTimer); lockTimer = null; }
+    destroyCharts();
 }
 
 // ============================================================

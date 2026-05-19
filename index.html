@@ -29,7 +29,7 @@
 
     <!-- ===== NAVBAR ===== -->
     <nav class="navbar">
-        <a href="#" class="logo" onclick="hideAdminPanel(); return false;">
+        <a href="index.html" class="logo">
             <i class="fas fa-hotel"></i>
             LuxeHôtel
         </a>
@@ -57,18 +57,7 @@
                 </a>
             </div>
 
-            <!-- Admin connecté -->
-            <div id="navAdmin" style="display:none; gap:0.75rem; align-items:center;">
-                <button onclick="toggleNotifications()" class="admin-btn" style="background:transparent;color:var(--primary);border:1.5px solid var(--border);cursor:pointer;">
-                    <i class="fas fa-bell"></i>
-                </button>
-                <button onclick="openAdminPanel()" class="admin-btn" style="cursor:pointer;">
-                    <i class="fas fa-cog"></i> Administration
-                </button>
-                <button onclick="logout()" class="admin-btn" style="background:var(--accent);cursor:pointer;">
-                    <i class="fas fa-sign-out-alt"></i>
-                </button>
-            </div>
+            <!-- Lien discret admin (pas de badge visible pour les clients) -->
         </div>
     </nav>
 
@@ -270,210 +259,6 @@
             </form>
         </div>
     </div>
-
-    <!-- ===== ADMIN LOGIN MODAL ===== -->
-    <div class="modal" id="loginModal">
-        <div class="modal-content" style="max-width:400px;">
-            <button class="close-modal" onclick="closeLoginModal()">&times;</button>
-            <div class="login-form">
-                <h2><i class="fas fa-shield-halved" style="color:var(--gold);"></i> Espace Administrateur</h2>
-                <p style="color:var(--text-muted);font-size:0.875rem;margin-bottom:1.5rem;">Accès réservé au personnel autorisé</p>
-                <form onsubmit="handleLogin(event)">
-                    <div class="form-group" style="text-align:left;">
-                        <label>Mot de passe</label>
-                        <div class="password-input">
-                            <input type="password" id="adminPassword" required placeholder="Mot de passe administrateur">
-                            <i class="fas fa-eye toggle-password" onclick="togglePassword()"></i>
-                        </div>
-                    </div>
-                    <button type="submit" class="submit-btn">
-                        <i class="fas fa-sign-in-alt"></i> Accéder au panneau admin
-                    </button>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- ===== ADMIN PANEL ===== -->
-    <div class="admin-panel" id="adminPanel">
-        <div class="admin-header">
-            <div style="display:flex;align-items:center;gap:1rem;">
-                <i class="fas fa-hotel" style="color:var(--gold);font-size:1.4rem;"></i>
-                <h2 style="font-family:'Playfair Display',serif;font-size:1.4rem;">LuxeHôtel — Administration</h2>
-            </div>
-            <nav class="admin-nav">
-                <a href="#" class="active" onclick="showAdminSection('dashboard')"><i class="fas fa-chart-line"></i> Tableau de bord</a>
-                <a href="#" onclick="showAdminSection('rooms')"><i class="fas fa-bed"></i> Chambres</a>
-                <a href="#" onclick="showAdminSection('reservations')"><i class="fas fa-calendar-check"></i> Réservations</a>
-                <a href="#" onclick="showAdminSection('clients')"><i class="fas fa-users"></i> Clients</a>
-                <a href="#" onclick="logout()" style="color:var(--accent);"><i class="fas fa-sign-out-alt"></i> Déconnexion</a>
-            </nav>
-        </div>
-
-        <div class="admin-content">
-
-            <!-- DASHBOARD -->
-            <div id="dashboardSection">
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-icon blue"><i class="fas fa-bed"></i></div>
-                        <div class="stat-info"><h3 id="totalRooms">0</h3><p>Chambres totales</p></div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon green"><i class="fas fa-check-circle"></i></div>
-                        <div class="stat-info"><h3 id="availableRooms">0</h3><p>Disponibles</p></div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon red"><i class="fas fa-times-circle"></i></div>
-                        <div class="stat-info"><h3 id="occupiedRooms">0</h3><p>Occupées</p></div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon gold"><i class="fas fa-coins"></i></div>
-                        <div class="stat-info"><h3 id="totalRevenue">0€</h3><p>Revenus totaux</p></div>
-                    </div>
-                </div>
-                <div class="admin-section">
-                    <h3 style="margin-bottom:1rem;font-size:1.1rem;font-weight:600;">Activité récente</h3>
-                    <div id="recentActivity"></div>
-                </div>
-            </div>
-
-            <!-- ROOMS -->
-            <div id="roomsSection" style="display:none;">
-                <div class="admin-section">
-                    <div class="section-header">
-                        <h3 style="font-size:1.1rem;font-weight:600;">Gestion des Chambres</h3>
-                        <button class="add-room-btn" onclick="showAddRoomModal()">
-                            <i class="fas fa-plus"></i> Ajouter une chambre
-                        </button>
-                    </div>
-                    <div style="overflow-x:auto;">
-                        <table class="rooms-table">
-                            <thead>
-                                <tr>
-                                    <th>Photo</th>
-                                    <th>Numéro</th>
-                                    <th>Type</th>
-                                    <th>Prix/nuit</th>
-                                    <th>Statut</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="adminRoomsTable"></tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <!-- RESERVATIONS -->
-            <div id="reservationsSection" style="display:none;">
-                <div class="admin-section">
-                    <h3 style="margin-bottom:1.5rem;font-size:1.1rem;font-weight:600;">Réservations</h3>
-                    <div id="reservationsList"></div>
-                </div>
-            </div>
-
-            <!-- CLIENTS -->
-            <div id="clientsSection" style="display:none;">
-                <div class="admin-section">
-                    <h3 style="margin-bottom:1.5rem;font-size:1.1rem;font-weight:600;">Clients inscrits</h3>
-                    <div id="clientsList" style="overflow-x:auto;"></div>
-                </div>
-            </div>
-
-        </div>
-    </div>
-
-    <!-- ===== ADD ROOM MODAL ===== -->
-    <div class="modal" id="addRoomModal">
-        <div class="modal-content" style="max-width:600px;">
-            <button class="close-modal" onclick="closeAddRoomModal()">&times;</button>
-            <h2 style="font-family:'Playfair Display',serif;margin-bottom:1.5rem;">Ajouter une chambre</h2>
-            <form id="addRoomForm" onsubmit="handleAddRoom(event)">
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
-                    <div class="form-group">
-                        <label>Numéro *</label>
-                        <input type="text" id="roomNumber" required placeholder="ex: 105">
-                    </div>
-                    <div class="form-group">
-                        <label>Type *</label>
-                        <select id="roomType" required>
-                            <option value="standard">Standard</option>
-                            <option value="deluxe">Deluxe</option>
-                            <option value="suite">Suite</option>
-                            <option value="presidentielle">Présidentielle</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label>Prix par nuit (€) *</label>
-                    <input type="number" id="roomPrice" required min="1" placeholder="150">
-                </div>
-                <div class="form-group">
-                    <label>Description</label>
-                    <textarea id="roomDesc" rows="3" placeholder="Description de la chambre..."></textarea>
-                </div>
-                <div class="form-group">
-                    <label>Photos</label>
-                    <div class="upload-zone" id="uploadZone" onclick="document.getElementById('roomImages').click()">
-                        <i class="fas fa-cloud-upload-alt"></i>
-                        <p>Cliquez ou glissez des images ici</p>
-                        <small style="color:var(--text-muted);">JPG, PNG, WebP · Max 8MB par image</small>
-                    </div>
-                    <input type="file" id="roomImages" multiple accept="image/*" style="display:none;" onchange="handleImageUpload(event)">
-                    <div class="image-preview" id="imagePreview"></div>
-                </div>
-                <button type="submit" class="submit-btn">
-                    <i class="fas fa-plus"></i> Ajouter la chambre
-                </button>
-            </form>
-        </div>
-    </div>
-
-    <!-- ===== EDIT ROOM MODAL ===== -->
-    <div class="modal" id="editRoomModal">
-        <div class="modal-content" style="max-width:560px;">
-            <button class="close-modal" onclick="closeEditRoomModal()">&times;</button>
-            <h2 style="font-family:'Playfair Display',serif;margin-bottom:1.5rem;">Modifier la chambre</h2>
-            <form id="editRoomForm" onsubmit="handleEditRoom(event)">
-                <input type="hidden" id="editRoomId">
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
-                    <div class="form-group">
-                        <label>Numéro *</label>
-                        <input type="text" id="editRoomNumber" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Type *</label>
-                        <select id="editRoomType" required>
-                            <option value="standard">Standard</option>
-                            <option value="deluxe">Deluxe</option>
-                            <option value="suite">Suite</option>
-                            <option value="presidentielle">Présidentielle</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label>Prix par nuit (€) *</label>
-                    <input type="number" id="editRoomPrice" required min="1">
-                </div>
-                <div class="form-group">
-                    <label>Description</label>
-                    <textarea id="editRoomDesc" rows="3"></textarea>
-                </div>
-                <div class="form-group">
-                    <label>Statut</label>
-                    <select id="editRoomStatus">
-                        <option value="available">Disponible</option>
-                        <option value="occupied">Occupée</option>
-                    </select>
-                </div>
-                <button type="submit" class="submit-btn">
-                    <i class="fas fa-save"></i> Enregistrer les modifications
-                </button>
-            </form>
-        </div>
-    </div>
-
     <!-- ===== NOTIFICATIONS PANEL ===== -->
     <div class="notification-panel" id="notificationPanel">
         <div class="notification-header">
@@ -523,7 +308,7 @@
                     <li><a href="#contact">Contact</a></li>
                     <li><a href="client.html">Espace client</a></li>
                     <li><a href="login.html">Connexion</a></li>
-                    <li><a href="#" onclick="showLoginModal(); return false;">Administration</a></li>
+                    <li><a href="admin.html">Administration</a></li>
                 </ul>
             </div>
         </div>
@@ -535,10 +320,6 @@
 
     <!-- EmailJS -->
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-    <!-- Firebase (compat) -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
     <script src="js/app.js"></script>
 
     <script>
@@ -547,19 +328,12 @@
         const session = localStorage.getItem('lh_session')
             || localStorage.getItem('currentUser')
             || localStorage.getItem('currentClient');
-        const adminSess = localStorage.getItem('currentAdmin');
 
         const navGuest = document.getElementById('navGuest');
         const navUser = document.getElementById('navUser');
-        const navAdmin = document.getElementById('navAdmin');
 
-        if (adminSess) {
+        if (session) {
             if (navGuest) navGuest.style.display = 'none';
-            if (navUser) navUser.style.display = 'none';
-            if (navAdmin) navAdmin.style.display = 'flex';
-        } else if (session) {
-            if (navGuest) navGuest.style.display = 'none';
-            if (navAdmin) navAdmin.style.display = 'none';
             if (navUser) navUser.style.display = 'flex';
             try {
                 const u = JSON.parse(session);
@@ -578,7 +352,6 @@
         } else {
             if (navGuest) navGuest.style.display = 'flex';
             if (navUser) navUser.style.display = 'none';
-            if (navAdmin) navAdmin.style.display = 'none';
         }
     });
 
@@ -593,9 +366,7 @@
     // Fermer modal en cliquant en dehors
     document.querySelectorAll('.modal').forEach(modal => {
         modal.addEventListener('click', e => {
-            if (e.target === modal) {
-                modal.classList.remove('active');
-            }
+            if (e.target === modal) modal.classList.remove('active');
         });
     });
     </script>
